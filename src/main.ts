@@ -69,7 +69,7 @@ function header() {
   toggle.id = 'theme-toggle'
   toggle.setAttribute('aria-label', progress.theme === 'dark' ? ui.light : ui.dark)
   return el('header', 'site-header', el('div', 'topbar', brand,
-    el('nav', 'top-actions', link(ui.github + ' ↗', repository, 'github'), toggle)))
+    el('nav', 'top-actions', link('← ' + ui.desktop, 'https://evan.v-1.top/', 'control desktop-return'), link(ui.github + ' ↗', repository, 'github'), toggle)))
 }
 
 function home() {
