@@ -1,0 +1,409 @@
+[
+  {
+    "id": "p01",
+    "moduleId": 3,
+    "lessonId": "declaration",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "哪条声明将 p 声明为指向 int 的指针？",
+    "options": [
+      {
+        "id": "0",
+        "text": "int p;"
+      },
+      {
+        "id": "1",
+        "text": "int *p;"
+      },
+      {
+        "id": "2",
+        "text": "int **p;"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "int *p 声明 p 指向 int。",
+    "feedback": {
+      "0": "这声明的是一个 int 值。",
+      "2": "这声明的是指向 int 指针的指针。"
+    }
+  },
+  {
+    "id": "p02",
+    "moduleId": 3,
+    "lessonId": "declaration",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "填空，让 p 指向 x。",
+    "options": [
+      {
+        "id": "0",
+        "text": "x"
+      },
+      {
+        "id": "1",
+        "text": "&x"
+      },
+      {
+        "id": "2",
+        "text": "*x"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "对 int 对象 x 使用 & 得到 int *。",
+    "feedback": {
+      "0": "x 给出整数值，例中的 8 不是空指针常量。",
+      "2": "x 是整数，不能对它解引用。"
+    },
+    "code": "int x = 8;\nint *p = ___;"
+  },
+  {
+    "id": "p03",
+    "moduleId": 3,
+    "lessonId": "declaration",
+    "difficulty": "intermediate",
+    "type": "boolean",
+    "prompt": "下面的声明中，p 和 q 都是指针。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "星号只属于 p 的声明符，q 是 int。",
+    "feedback": {
+      "0": "逗号分隔了两个声明符，q 自己没有星号。"
+    },
+    "code": "int *p, q;"
+  },
+  {
+    "id": "p04",
+    "moduleId": 3,
+    "lessonId": "dereference",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "在函数内部执行以下三行，输出是什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "4"
+      },
+      {
+        "id": "1",
+        "text": "9"
+      },
+      {
+        "id": "2",
+        "text": "地址"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "*p = 9 修改了 p 所指的 x。",
+    "feedback": {
+      "0": "4 是修改前的值。",
+      "2": "%d 输出整数，传入的是 x。"
+    },
+    "code": "int x = 4, *p = &x;\n*p = 9;\nprintf(\"%d\", x);"
+  },
+  {
+    "id": "p05",
+    "moduleId": 3,
+    "lessonId": "dereference",
+    "difficulty": "basic",
+    "type": "boolean",
+    "prompt": "如果 p 是空指针，读取 *p 是有效操作。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "解引用空指针来读值会产生未定义行为。",
+    "feedback": {
+      "0": "空指针不指向可读取的对象。"
+    }
+  },
+  {
+    "id": "p06",
+    "moduleId": 3,
+    "lessonId": "dereference",
+    "difficulty": "intermediate",
+    "type": "output",
+    "prompt": "在函数内部执行以下片段，输出是什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "8 2"
+      },
+      {
+        "id": "1",
+        "text": "1 8"
+      },
+      {
+        "id": "2",
+        "text": "8 8"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "p 先改为指向 y，随后 *p = 8 只改写 y。",
+    "feedback": {
+      "0": "赋值发生时 p 已不再指向 x。",
+      "2": "通过 p 只改写其当前目标。"
+    },
+    "code": "int x = 1, y = 2;\nint *p = &x;\np = &y;\n*p = 8;\nprintf(\"%d %d\", x, y);"
+  },
+  {
+    "id": "p07",
+    "moduleId": 3,
+    "lessonId": "parameters",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "填空，让 set 修改 x。",
+    "options": [
+      {
+        "id": "0",
+        "text": "x"
+      },
+      {
+        "id": "1",
+        "text": "*x"
+      },
+      {
+        "id": "2",
+        "text": "&x"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "set 接收 int *，应传入 x 的地址。",
+    "feedback": {
+      "0": "整数值无法定位原来的变量。",
+      "1": "x 不是指针，不能解引用。"
+    },
+    "code": "void set(int *p) { *p = 5; }\n\n/* 调用方片段 */\nint x = 0;\nset(___);"
+  },
+  {
+    "id": "p08",
+    "moduleId": 3,
+    "lessonId": "parameters",
+    "difficulty": "basic",
+    "type": "boolean",
+    "prompt": "C 函数的指针参数本身按值传递。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "形参收到地址的副本，仍能通过它修改原对象。",
+    "feedback": {
+      "1": "修改原对象与传递指针变量本身是两回事。"
+    }
+  },
+  {
+    "id": "p09",
+    "moduleId": 3,
+    "lessonId": "parameters",
+    "difficulty": "advanced",
+    "type": "output",
+    "prompt": "调用方执行片段后，*p 的值是多少？",
+    "options": [
+      {
+        "id": "0",
+        "text": "1"
+      },
+      {
+        "id": "1",
+        "text": "2"
+      },
+      {
+        "id": "2",
+        "text": "无法确定"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "choose 只更新形参 p 的副本，调用者的 p 仍指向 x。",
+    "feedback": {
+      "1": "需要通过指针变量的地址改写调用者的 p。",
+      "2": "x 仍在作用域内，且 p 未被改写。"
+    },
+    "code": "void choose(int *p, int *q) { p = q; }\n\n/* 调用方片段 */\nint x = 1, y = 2;\nint *p = &x;\nchoose(p, &y);"
+  },
+  {
+    "id": "p10",
+    "moduleId": 3,
+    "lessonId": "arithmetic",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "下面的 printf 输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "3"
+      },
+      {
+        "id": "1",
+        "text": "6"
+      },
+      {
+        "id": "2",
+        "text": "9"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "a + 1 指向第二个 int 元素。",
+    "feedback": {
+      "0": "首元素由 a + 0 指向。",
+      "2": "第三个元素由 a + 2 指向。"
+    },
+    "code": "int a[] = {3, 6, 9};\nprintf(\"%d\", *(a + 1));"
+  },
+  {
+    "id": "p11",
+    "moduleId": 3,
+    "lessonId": "arithmetic",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "int a[3] 的哪个表达式合法地产生尾后指针？",
+    "options": [
+      {
+        "id": "0",
+        "text": "a + 2"
+      },
+      {
+        "id": "1",
+        "text": "a + 3"
+      },
+      {
+        "id": "2",
+        "text": "a + 4"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "索引 3 刚好位于三元素数组末尾之后。",
+    "feedback": {
+      "0": "索引 2 是最后一个元素。",
+      "2": "这超出了允许形成的尾后位置。"
+    }
+  },
+  {
+    "id": "p12",
+    "moduleId": 3,
+    "lessonId": "arithmetic",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "设 int a[4]，(a + 4) - (a + 1) 的值是什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "3"
+      },
+      {
+        "id": "1",
+        "text": "4"
+      },
+      {
+        "id": "2",
+        "text": "由于尾后指针而未定义"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "同一数组中的指针相减可以包含尾后指针，差值按元素计算。",
+    "feedback": {
+      "1": "C 指针的差值不是字节数。",
+      "2": "形成和相减都不解引用尾后位置。"
+    }
+  },
+  {
+    "id": "p13",
+    "moduleId": 3,
+    "lessonId": "arrays",
+    "difficulty": "basic",
+    "type": "boolean",
+    "prompt": "数组名在大多数表达式中转换为指向首元素的指针。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "例如 int *p = a; 使用的就是这个转换。",
+    "feedback": {
+      "1": "sizeof 和一元 & 等是例外，普通指针初始化会转换。"
+    }
+  },
+  {
+    "id": "p14",
+    "moduleId": 3,
+    "lessonId": "arrays",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "哪一项总能取得当前作用域中 int a[5] 的元素个数？",
+    "options": [
+      {
+        "id": "0",
+        "text": "sizeof a"
+      },
+      {
+        "id": "1",
+        "text": "sizeof a / sizeof a[0]"
+      },
+      {
+        "id": "2",
+        "text": "sizeof &a / sizeof a[0]"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "数组总大小除以单个元素大小得到元素个数。",
+    "feedback": {
+      "0": "这是数组的字节大小，不能可移植地当作元素个数。",
+      "2": "&a 是指针，sizeof 得到的是指针对象的大小。"
+    }
+  },
+  {
+    "id": "p15",
+    "moduleId": 3,
+    "lessonId": "arrays",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "函数形参 int a[] 在参数声明中调整成什么类型？",
+    "options": [
+      {
+        "id": "0",
+        "text": "int *"
+      },
+      {
+        "id": "1",
+        "text": "int (*)[]"
+      },
+      {
+        "id": "2",
+        "text": "保持数组类型"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "数组形式的形参调整为指向元素类型的指针。",
+    "feedback": {
+      "1": "int (*)[] 是指向数组的指针，需要不同的声明。",
+      "2": "这里是形参声明，函数收到指针。"
+    }
+  }
+]
