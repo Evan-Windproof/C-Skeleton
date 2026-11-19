@@ -8,7 +8,8 @@ export default defineConfig({
     launchOptions: { executablePath: process.env.CHROMIUM_PATH },
   },
   webServer: {
-    command: 'BASE_PATH=/C-Skeleton/ npm run build && BASE_PATH=/C-Skeleton/ npm run preview -- --host 127.0.0.1 --port 4173 --strictPort',
+    command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4173 --strictPort',
+    env: { BASE_PATH: '/C-Skeleton/' },
     url: 'http://127.0.0.1:4173/C-Skeleton/',
     timeout: 60_000,
   },

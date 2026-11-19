@@ -1,13 +1,15 @@
 import './styles.css'
-import { modules, lessons, lessonModuleId, questionsFor, type Lesson, type Question } from './data'
-import { accuracy, loadProgress, recordAttempt, saveProgress } from './progress'
+import { version } from '../package.json' with { type: 'json' }
+import { modules, lessons, moduleForLesson, questionsFor, type CourseModule, type Example, type Lesson, type Question } from './data'
+import { loadProgress, progressStats, recordAttempt, saveProgress } from './progress'
 import { highlight } from './highlight'
 import { ui } from './locale'
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 const progress = loadProgress()
 const repository = 'https://github.com/Evan-Windproof/C-Skeleton'
-const routePrefix = '#lesson/'
+const lessonRoute = '#lesson/'
+const moduleRoute = '#module/'
 let storageFailed = false
 const drafts = new Map<string, { optionId: string; submitted: boolean }>()
 const types = { single: '单选题', boolean: '判断题', output: '输出预测', completion: '代码补全' }
@@ -40,21 +42,29 @@ function persist() {
 }
 
 function lessonLink(lesson: Lesson, label = lesson.title, className = '') {
-  return link(label, routePrefix + lesson.id, className)
+  return link(label, lessonRoute + lesson.id, className)
 }
 
-function progressView() {
-  const count = progress.completed.length
-  const rate = accuracy(progress)
+function moduleName(module: CourseModule) {
+  return `MODULE ${String(module.id).padStart(2, '0')}`
+}
+
+function moduleLink(module: CourseModule, label = module.title, className = '') {
+  return link(label, moduleRoute + module.id, className)
+}
+
+function progressView(module?: CourseModule) {
+  const { total, completed, answered, accuracy } = progressStats(progress, module)
+  const label = module ? ui.moduleProgress : ui.overallProgress
   const bar = el('progress')
-  bar.max = lessons.length
-  bar.value = count
-  bar.setAttribute('aria-label', ui.progress)
+  bar.max = total
+  bar.value = completed
+  bar.setAttribute('aria-label', label)
   return el('section', 'progress-card',
-    el('h2', '', ui.progress),
-    el('div', 'progress-value', el('strong', '', String(count)), ` / ${lessons.length}`),
+    el('h2', '', label),
+    el('div', 'progress-value', el('strong', '', String(completed)), ` / ${total}`),
     bar,
-    el('p', 'muted', `已答 ${progress.attempts.length} 次 · 正确率 ${rate === null ? '—' : `${rate}%`}`))
+    el('p', 'muted', `已答 ${answered} 次 · 正确率 ${accuracy === null ? '—' : `${accuracy}%`}`))
 }
 
 function header() {
@@ -85,20 +95,39 @@ function home() {
     progressView())
   const cards = el('div', 'module-grid')
   for (const module of modules) {
-    const available = module.id === lessonModuleId
-    const title = el('h3', '', module.title)
-    const card = el('article', available ? 'module available' : 'module',
-      el('div', 'module-meta', el('span', 'module-index', `MODULE ${String(module.id).padStart(2, '0')}`),
-        el('span', available ? 'available-label' : 'muted', available ? ui.available : ui.unavailable)),
-      title,
-      el('p', 'topics muted', module.topics.join(' · ')))
-    if (available) {
-      card.append(el('p', 'muted', '当前专题包含 5 个知识点。二级指针专项尚未开放。'),
-        lessonLink(lessons[0], '进入指针基础 →', 'module-link'))
-    }
+    const { total, completed } = progressStats(progress, module)
+    const card = el('article', 'module',
+      el('div', 'module-meta', el('span', 'module-index', moduleName(module)),
+        el('span', 'muted', `${ui.completed} ${completed} / ${total}`)),
+      el('h3', '', moduleLink(module, module.title + ' →', 'module-link')),
+      el('p', 'muted', module.description))
     cards.append(card)
   }
   return [hero, el('section', 'catalog', el('h2', '', ui.catalog), cards)]
+}
+
+function lessonList(module: CourseModule, active?: Lesson) {
+  return el('ol', 'lesson-list', ...module.lessons.map(lesson => {
+    const marker = el('span', 'completion-mark')
+    marker.dataset.completeFor = lesson.id
+    if (progress.completed.includes(lesson.id)) marker.textContent = `✓ ${ui.completed}`
+    const entry = lessonLink(lesson)
+    entry.append(marker)
+    if (lesson.id === active?.id) entry.setAttribute('aria-current', 'page')
+    return el('li', '', entry)
+  }))
+}
+
+function moduleView(module: CourseModule) {
+  const list = el('nav', 'module-lessons', lessonList(module))
+  list.setAttribute('aria-label', `${module.title}课程列表`)
+  return el('div', 'module-page',
+    el('div', 'module-heading',
+      link('← ' + ui.allModules, '#home', 'module-link'),
+      el('p', 'eyebrow', moduleName(module)),
+      el('h1', '', module.title),
+      el('p', 'muted', module.description)),
+    el('div', 'module-layout', list, progressView(module)))
 }
 
 function codeBlock(source: string) {
@@ -107,25 +136,27 @@ function codeBlock(source: string) {
   return el('pre', '', code)
 }
 
-function exampleView(lesson: Lesson) {
+function exampleView(example: Example, title: string) {
   const status = el('span', 'muted')
   status.setAttribute('role', 'status')
   const copy = button(ui.copy, () => {
     void (async () => {
       try {
-        await navigator.clipboard.writeText(lesson.example.code)
+        await navigator.clipboard.writeText(example.code)
         status.textContent = ui.copied
       } catch {
         status.textContent = ui.copyError
       }
     })()
   }, 'control')
-  const notes = el('ol', 'line-notes', ...lesson.example.lines.map(line => el('li', '', line)))
+  const notes = el('ol', 'line-notes', ...example.lines.map(line => el('li', '', line)))
   const section = el('section', 'panel',
-    el('div', 'section-head', el('h2', '', '代码示例'), el('div', 'actions', status, copy)),
-    codeBlock(lesson.example.code), notes)
-  if (progress.mode === 'deep') {
-    section.append(el('p', 'output', '程序输出 ', el('code', '', lesson.example.output)))
+    el('div', 'section-head', el('h2', '', title), el('div', 'actions', status, copy)))
+  if (example.kind === 'snippet') section.append(el('p', 'muted', 'C 代码片段 · 不能独立编译'))
+  section.append(codeBlock(example.code), notes)
+  if (example.kind === 'program') {
+    if (example.input !== undefined) section.append(el('p', 'output', '示例输入 ', el('code', '', example.input.trimEnd())))
+    section.append(el('p', 'output', '预期输出 ', el('code', '', example.output)))
   }
   return section
 }
@@ -140,7 +171,7 @@ function questionView(question: Question, index: number) {
       ? progress.attempts.findLast(attempt => attempt.questionId === question.id)
       : undefined
     const field = el('fieldset', '', el('legend', '', `${index + 1}. ${question.prompt}`))
-    if (question.code) field.append(el('p', 'muted code-caption', 'C 代码片段'), codeBlock(question.code))
+    if (question.code) field.append(el('p', 'muted code-caption', 'C 代码片段 · 不能独立编译'), codeBlock(question.code))
     for (const option of question.options) {
       const input = el('input')
       input.type = 'radio'
@@ -198,30 +229,20 @@ function questionView(question: Question, index: number) {
     draft.submitted = true
     persist()
     draw('retry')
-    document.querySelector('.progress-card')?.replaceWith(progressView())
-    updateCompletionMarker(question.lessonId)
+    document.querySelector('.progress-card')?.replaceWith(progressView(moduleForLesson(question.lessonId)))
+    const marker = document.querySelector<HTMLElement>(`[data-complete-for="${question.lessonId}"]`)
+    if (marker && progress.completed.includes(question.lessonId)) marker.textContent = `✓ ${ui.completed}`
   })
   draw()
   return form
 }
 
-function updateCompletionMarker(lessonId: string) {
-  const marker = document.querySelector<HTMLElement>(`[data-complete-for="${lessonId}"]`)
-  if (marker && progress.completed.includes(lessonId)) marker.textContent = '✓'
-}
-
-function lessonView(lesson: Lesson) {
+function lessonView(lesson: Lesson, module: CourseModule) {
   const index = lessons.indexOf(lesson)
-  const list = el('nav', 'lesson-nav', el('h2', '', '指针基础'))
-  list.setAttribute('aria-label', '指针基础知识点')
-  for (const item of lessons) {
-    const marker = el('span', 'completion-mark', progress.completed.includes(item.id) ? '✓' : '')
-    marker.dataset.completeFor = item.id
-    const entry = lessonLink(item)
-    entry.append(marker)
-    if (item.id === lesson.id) entry.setAttribute('aria-current', 'page')
-    list.append(entry)
-  }
+  const list = el('nav', '', lessonList(module, lesson))
+  list.setAttribute('aria-label', `${module.title}课程列表`)
+  const directory = el('details', 'lesson-nav', el('summary', '', ui.catalog), list)
+  directory.open = matchMedia('(min-width: 561px)').matches
   const modes = el('div', 'mode-switch')
   for (const mode of ['quick', 'deep'] as const) {
     const choice = button(ui[mode], () => {
@@ -239,7 +260,7 @@ function lessonView(lesson: Lesson) {
   details.open = progress.mode === 'deep'
   overview.append(details)
   if (progress.mode === 'deep') {
-    overview.append(el('h3', '', '内存关系示意'),
+    overview.append(el('h3', '', '内存或执行流程示意'),
       el('ol', 'diagram', ...lesson.diagram.map(step => el('li', '', step))))
   }
   const practice = el('section', 'practice', el('h2', '', '互动练习'),
@@ -252,29 +273,36 @@ function lessonView(lesson: Lesson) {
     ? lessonLink(lessons[index + 1], '下一节 →', 'primary')
     : link('返回课程首页 →', '#home', 'primary'))
   return el('div', 'lesson-layout',
-    el('aside', 'rail', list, progressView()),
+    el('aside', 'rail', directory, progressView(module)),
     el('article', 'lesson-content',
-      el('div', 'lesson-title', el('p', 'eyebrow', `MODULE 03 / 指针基础 · ${index + 1} / ${lessons.length}`),
+      el('div', 'lesson-title', el('div', 'eyebrow lesson-location',
+        link(ui.allModules, '#home'), moduleLink(module, `${moduleName(module)} ${module.title}`),
+        el('span', '', `${module.lessons.indexOf(lesson) + 1} / ${module.lessons.length}`)),
         el('h1', '', lesson.title), modes),
-      overview, exampleView(lesson), practice, pager))
+      overview, exampleView(lesson.example, '代码示例'),
+      ...(progress.mode === 'deep' ? [exampleView(lesson.deepExample, '深入示例')] : []),
+      practice, pager))
 }
 
 function render(navigate = false) {
   const hash = window.location.hash
-  const lesson = hash.startsWith(routePrefix) ? lessons.find(item => routePrefix + item.id === hash) : undefined
+  const lesson = lessons.find(item => lessonRoute + item.id === hash)
+  const module = lesson ? moduleForLesson(lesson.id) : modules.find(item => moduleRoute + item.id === hash)
   if (lesson && progress.current !== lesson.id) {
     progress.current = lesson.id
     persist()
   }
   document.documentElement.dataset.theme = progress.theme
-  document.title = lesson ? `${lesson.title} · ${ui.title}` : `${ui.title} · C 语言学习`
-  const main = el('main', 'container', ...(lesson ? [lessonView(lesson)] : home()))
+  const title = lesson?.title ?? module?.title
+  document.title = title ? `${title} · ${ui.title}` : `${ui.title} · C 语言学习`
+  const content = module ? [lesson ? lessonView(lesson, module) : moduleView(module)] : home()
+  const main = el('main', 'container', ...content)
   main.id = 'main'
   main.tabIndex = -1
   const status = el('span', '', storageFailed ? '本次学习记录仅保留在当前页面。' : '')
   status.id = 'storage-status'
   status.setAttribute('role', 'status')
-  const footer = el('footer', 'container site-footer', 'C Skeleton v0.1.0', link('GPL-3.0-or-later', repository + '/blob/main/LICENSE'), status)
+  const footer = el('footer', 'container site-footer', `${ui.title} v${version}`, link('GPL-3.0-or-later', repository + '/blob/main/LICENSE'), status)
   app.replaceChildren(header(), main, footer)
   if (navigate) {
     window.scrollTo(0, 0)

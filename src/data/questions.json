@@ -1,5 +1,1355 @@
 [
   {
+    "id": "q-c-main-1",
+    "lessonId": "c-main",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "宿主环境中的 C 程序从哪个函数开始执行用户代码？",
+    "options": [
+      {
+        "id": "0",
+        "text": "stdio"
+      },
+      {
+        "id": "1",
+        "text": "puts"
+      },
+      {
+        "id": "2",
+        "text": "main"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "宿主环境在完成启动准备后调用 main。",
+    "feedback": {
+      "0": "stdio.h 是标准头文件名的一部分。",
+      "1": "puts 是由程序显式调用的标准库函数。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-main-2",
+    "lessonId": "c-main",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "假设标准输出正常，函数体中的两行代码依次输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "start 后换行，ready 后换行"
+      },
+      {
+        "id": "1",
+        "text": "ready 后换行，start 后换行"
+      },
+      {
+        "id": "2",
+        "text": "startready 后换行"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "两条语句按顺序执行，puts 每次都自动追加一个换行。",
+    "feedback": {
+      "1": "代码先执行第一条 puts。",
+      "2": "两次 puts 都分别写一个换行。"
+    },
+    "code": "puts(\"start\");\nputs(\"ready\");",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-main-3",
+    "lessonId": "c-main",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "为无需命令行参数的宿主程序补全标准入口定义。",
+    "options": [
+      {
+        "id": "0",
+        "text": "void main(void)"
+      },
+      {
+        "id": "1",
+        "text": "int main(void)"
+      },
+      {
+        "id": "2",
+        "text": "int start(void)"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "void 参数列表表示不接收参数，int 是宿主环境可接收的返回类型。",
+    "feedback": {
+      "0": "标准的可移植入口形式返回 int。",
+      "2": "函数名 start 不会成为标准 C 的入口。"
+    },
+    "code": "___\n{\n    return 0;\n}",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-variables-1",
+    "lessonId": "c-variables",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "要保存可能含小数的测量值，一般选哪个基本类型？",
+    "options": [
+      {
+        "id": "0",
+        "text": "double"
+      },
+      {
+        "id": "1",
+        "text": "int"
+      },
+      {
+        "id": "2",
+        "text": "char"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "double 是浮点类型，可以保存近似的非整数值。",
+    "feedback": {
+      "1": "int 的值是整数。",
+      "2": "char 是整数类型，常用于单个字符。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-variables-2",
+    "lessonId": "c-variables",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "代码输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "3 A"
+      },
+      {
+        "id": "1",
+        "text": "7 A"
+      },
+      {
+        "id": "2",
+        "text": "7 65"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "赋值把 7 写入 count，%c 按字符显示 label 的值。",
+    "feedback": {
+      "0": "3 是初始化的值，随后已被替换。",
+      "2": "%c 输出字符；字符编码的数值也不是 C11 固定的。"
+    },
+    "code": "int count = 3;\nchar label = 'A';\ncount = 7;\nprintf(\"%d %c\\n\", count, label);",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-variables-3",
+    "lessonId": "c-variables",
+    "difficulty": "intermediate",
+    "type": "boolean",
+    "prompt": "声明 int total; 后可以在同一个函数中立刻读取这个尚未赋值的局部变量。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "这种自动存储期的变量没有初始化时具有不确定值，不能把它当作可用的整数读取。",
+    "feedback": {
+      "0": "普通局部变量不会像具有静态存储期的对象那样自动初始化为零。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-constants-1",
+    "lessonId": "c-constants",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "哪一种写法表示字符串字面量？",
+    "options": [
+      {
+        "id": "0",
+        "text": "\"A\""
+      },
+      {
+        "id": "1",
+        "text": "'A'"
+      },
+      {
+        "id": "2",
+        "text": "A"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "双引号产生一个字符数组，内含 A 和用于结束字符串的空字符。",
+    "feedback": {
+      "1": "单引号形成字符常量，在 C 中类型为 int。",
+      "2": "裸写字母是标识符，需要有对应声明。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-constants-2",
+    "lessonId": "c-constants",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "选择适合此处的声明，使后续通过 limit 赋值时产生诊断。",
+    "options": [
+      {
+        "id": "0",
+        "text": "int limit = 5;"
+      },
+      {
+        "id": "1",
+        "text": "const int limit = 5;"
+      },
+      {
+        "id": "2",
+        "text": "static int limit = 5;"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "const 限定的对象不能作为赋值左侧的可修改左值。",
+    "feedback": {
+      "0": "普通 int 对象可以赋新值。",
+      "2": "static 影响存储期，未限制修改。"
+    },
+    "code": "___\nprintf(\"%d\\n\", limit);",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-constants-3",
+    "lessonId": "c-constants",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "在 C11 中，下列哪个名字可以像整数常量一样直接用在 case 标签中？",
+    "options": [
+      {
+        "id": "0",
+        "text": "const int limit = 8; 中的 limit"
+      },
+      {
+        "id": "1",
+        "text": "int limit = 8; 中的 limit"
+      },
+      {
+        "id": "2",
+        "text": "enum { LIMIT = 8 }; 中的 LIMIT"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "枚举常量是整数常量表达式，可作为 case 标签的值。",
+    "feedback": {
+      "0": "limit 是 const 对象，而 case 要求整数常量表达式。",
+      "1": "整数对象的当前值不是 case 所需的编译期整数常量。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-operators-1",
+    "lessonId": "c-operators",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "在整数运算中，下面代码输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "2.25 1"
+      },
+      {
+        "id": "1",
+        "text": "2 0"
+      },
+      {
+        "id": "2",
+        "text": "2 1"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "9 除以 4 的整数商是 2，余数是 1。",
+    "feedback": {
+      "0": "两个操作数都是整数，/ 不产生浮点值。",
+      "1": "9 等于 4×2 加 1。"
+    },
+    "code": "printf(\"%d %d\\n\", 9 / 4, 9 % 4);",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-operators-2",
+    "lessonId": "c-operators",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "补全条件，检查 age 的值是否等于 18。",
+    "options": [
+      {
+        "id": "0",
+        "text": "age == 18"
+      },
+      {
+        "id": "1",
+        "text": "age = 18"
+      },
+      {
+        "id": "2",
+        "text": "age != 18"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "== 比较两侧的值并产生 0 或 1。",
+    "feedback": {
+      "1": "= 改写 age，并把赋入的值作为表达式结果。",
+      "2": "!= 检查的是不相等。"
+    },
+    "code": "if (___)\n    puts(\"eighteen\");",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-operators-3",
+    "lessonId": "c-operators",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "当 divisor 为 0 时，怎样先检查除数，再安全地计算这一条件？",
+    "options": [
+      {
+        "id": "0",
+        "text": "12 / divisor > 2 && divisor != 0"
+      },
+      {
+        "id": "1",
+        "text": "divisor != 0 && 12 / divisor > 2"
+      },
+      {
+        "id": "2",
+        "text": "divisor != 0 & 12 / divisor > 2"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "&& 在左侧为假时不求值右侧，所以 divisor 为 0 时不会执行除法。",
+    "feedback": {
+      "0": "除法在左侧，检查前已经求值。",
+      "2": "按位与 & 不具有短路求值。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-branching-1",
+    "lessonId": "c-branching",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "检查温度是否在 18 到 26 的区间内，通常用什么结构？",
+    "options": [
+      {
+        "id": "0",
+        "text": "一个 switch case 直接写 18 到 26"
+      },
+      {
+        "id": "1",
+        "text": "default 的位置决定区间"
+      },
+      {
+        "id": "2",
+        "text": "if 搭配范围条件"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "if 可以直接判断多个比较组合成的条件。",
+    "feedback": {
+      "0": "C11 的 case 标签是单个整数常量表达式。",
+      "1": "default 处理未匹配值，不能声明一个范围。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-branching-2",
+    "lessonId": "c-branching",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "补全 case 1，使匹配时只打印 one。",
+    "options": [
+      {
+        "id": "0",
+        "text": "break;"
+      },
+      {
+        "id": "1",
+        "text": ";"
+      },
+      {
+        "id": "2",
+        "text": "case 2:"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "break 跳出 switch，所以本次匹配不会继续执行下一个 case。",
+    "feedback": {
+      "1": "空语句不会改变控制流。",
+      "2": "增加同值 case 标签不合法，也不能退出 switch。"
+    },
+    "code": "switch (n) {\ncase 1: puts(\"one\"); ___\ncase 2: puts(\"two\"); break;\n}",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-branching-3",
+    "lessonId": "c-branching",
+    "difficulty": "intermediate",
+    "type": "output",
+    "prompt": "下面代码中没有写 break，输出的行按什么顺序出现？",
+    "options": [
+      {
+        "id": "0",
+        "text": "只打印 first"
+      },
+      {
+        "id": "1",
+        "text": "first，然后 second"
+      },
+      {
+        "id": "2",
+        "text": "只打印 second"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "匹配 case 1 后向下执行，下一标签不会重新判断当前值。",
+    "feedback": {
+      "0": "case 标签不会自动结束前一个分支。",
+      "2": "n 为 1，起点是 case 1。"
+    },
+    "code": "int n = 1;\nswitch (n) {\ncase 1: puts(\"first\");\ncase 2: puts(\"second\");\n}",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-loops-1",
+    "lessonId": "c-loops",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "哪一种循环在正常进入语句后至少执行一次循环体？",
+    "options": [
+      {
+        "id": "0",
+        "text": "do while"
+      },
+      {
+        "id": "1",
+        "text": "while"
+      },
+      {
+        "id": "2",
+        "text": "任何带 ++ 的 for"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "do while 把条件放在循环体之后，所以即使条件为假也先执行一次。",
+    "feedback": {
+      "1": "while 在循环体之前判断，可能一次也不执行。",
+      "2": "步进表达式不能让初次条件为假的 for 进入循环体。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-loops-2",
+    "lessonId": "c-loops",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "下列循环输出什么值？",
+    "options": [
+      {
+        "id": "0",
+        "text": "2"
+      },
+      {
+        "id": "1",
+        "text": "3"
+      },
+      {
+        "id": "2",
+        "text": "4"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "i 依次取 0、1、2，每轮给 hits 加一。",
+    "feedback": {
+      "0": "最大下标为 2，但从 0 到 2 共有三次。",
+      "2": "当 i 等于 3 时条件为假，循环体不执行。"
+    },
+    "code": "int hits = 0;\nfor (int i = 0; i < 3; ++i)\n    ++hits;\nprintf(\"%d\\n\", hits);",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-loops-3",
+    "lessonId": "c-loops",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "在 for (int i = 0; i < 4; ++i) 的循环体内执行 continue 后，下一步是什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "直接判断 i < 4，不改变 i"
+      },
+      {
+        "id": "1",
+        "text": "退出整层 for"
+      },
+      {
+        "id": "2",
+        "text": "执行 ++i，再判断 i < 4"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "for 的 continue 跳过剩余循环体，接着执行步进表达式。",
+    "feedback": {
+      "0": "这是混淆了 for 的步进和 while 的直接回跳。",
+      "1": "break 才在这里退出循环。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-stdio-1",
+    "lessonId": "c-stdio",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "补全 printf 的格式，按十进制显示 int 变量 n 并换行。",
+    "options": [
+      {
+        "id": "0",
+        "text": "\"%s\\n\""
+      },
+      {
+        "id": "1",
+        "text": "\"%f\\n\""
+      },
+      {
+        "id": "2",
+        "text": "\"%d\\n\""
+      }
+    ],
+    "answerId": "2",
+    "explanation": "%d 对应 int，\\n 是换行转义。",
+    "feedback": {
+      "0": "%s 需要指向字符序列的指针，这里给了 int。",
+      "1": "%f 需要 double 参数，这里不会自动把 int 提升为 double。"
+    },
+    "code": "int n = 12;\nprintf(___, n);",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-stdio-2",
+    "lessonId": "c-stdio",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "为什么要检查 scanf(\"%2d\", &n) 的返回值？",
+    "options": [
+      {
+        "id": "0",
+        "text": "确认 n 是否成功写入"
+      },
+      {
+        "id": "1",
+        "text": "得到 n 的数值"
+      },
+      {
+        "id": "2",
+        "text": "获取 n 在内存中的地址"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "返回 1 表示唯一的转换成功赋值；失败时不能假定 n 已有新值。",
+    "feedback": {
+      "1": "转换结果写入 n，返回值表示成功赋值的项目数。",
+      "2": "地址是通过 &n 传进去的参数。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-stdio-3",
+    "lessonId": "c-stdio",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "char line[8] 调用 fgets(line, sizeof line, stdin) 成功后，至少能保证什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "一定读取了一整行"
+      },
+      {
+        "id": "1",
+        "text": "存入的字符后有终止空字符"
+      },
+      {
+        "id": "2",
+        "text": "一定删除了换行符"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "成功时 fgets 读取至多容量减一的字符，并写入终止空字符。",
+    "feedback": {
+      "0": "长行可能只读取第一部分，剩余内容仍在输入流中。",
+      "2": "若读到了换行符且有空间，fgets 会把它保留在数组中。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-basics-review-1",
+    "lessonId": "c-basics-review",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "跟踪循环中累计的值，代码最后输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "10"
+      },
+      {
+        "id": "1",
+        "text": "6"
+      },
+      {
+        "id": "2",
+        "text": "4"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "偶数判断仅在 i 为 2 和 4 时成立，总和是 6。",
+    "feedback": {
+      "0": "10 是从 1 加到 4 的和，而条件只筛选偶数。",
+      "2": "4 是最后一个偶数，代码将每个匹配项累加。"
+    },
+    "code": "int sum = 0;\nfor (int i = 1; i <= 4; ++i)\n    if (i % 2 == 0)\n        sum += i;\nprintf(\"%d\\n\", sum);",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-basics-review-2",
+    "lessonId": "c-basics-review",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "sum 和 hits 均为 int，且 hits 非零。补全表达式，使平均值保留小数部分。",
+    "options": [
+      {
+        "id": "0",
+        "text": "(double)(sum / hits)"
+      },
+      {
+        "id": "1",
+        "text": "sum / hits"
+      },
+      {
+        "id": "2",
+        "text": "(double)sum / hits"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "一个操作数在除法前转成 double，另一个按运算规则转换后再相除。",
+    "feedback": {
+      "0": "括号内先进行整数除法，转换时已经丢掉小数部分。",
+      "1": "赋值给 double 时才转换，除法本身仍是整数除法。"
+    },
+    "code": "double mean = ___;",
+    "moduleId": 1
+  },
+  {
+    "id": "q-c-basics-review-3",
+    "lessonId": "c-basics-review",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "若筛选结果一项也没有，如何处理后续平均值逻辑？",
+    "options": [
+      {
+        "id": "0",
+        "text": "用 if (hits != 0) 包住平均值计算"
+      },
+      {
+        "id": "1",
+        "text": "把 hits 初值设为 1"
+      },
+      {
+        "id": "2",
+        "text": "先计算，再把 hits 为 0 的结果隐去"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "先检查命中数，避免在无匹配项时执行除法。",
+    "feedback": {
+      "1": "人为增加一个统计项会改变平均值。",
+      "2": "计算已经发生，后续分支不能修正除零。"
+    },
+    "moduleId": 1
+  },
+  {
+    "id": "q-fn-declaration-1",
+    "lessonId": "fn-declaration",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "哪一行是带参数类型的函数声明？",
+    "options": [
+      {
+        "id": "0",
+        "text": "int scale(int n);"
+      },
+      {
+        "id": "1",
+        "text": "int scale = 3;"
+      },
+      {
+        "id": "2",
+        "text": "scale(3);"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "有返回类型、函数名和参数类型，以分号结束，构成函数原型。",
+    "feedback": {
+      "1": "它定义了一个 int 对象。",
+      "2": "它调用已有函数，未声明类型。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-declaration-2",
+    "lessonId": "fn-declaration",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "补全原型，使它和下面的定义一致。",
+    "options": [
+      {
+        "id": "0",
+        "text": "void cube(int value);"
+      },
+      {
+        "id": "1",
+        "text": "int cube(int value);"
+      },
+      {
+        "id": "2",
+        "text": "int cube(void);"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "定义返回 int 并接收一个 int 参数，所以原型应给出相同类型。",
+    "feedback": {
+      "0": "void 返回类型与定义的 int 冲突。",
+      "2": "void 参数列表表示不接收参数。"
+    },
+    "code": "___\n\nint cube(int value)\n{\n    return value * value * value;\n}",
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-declaration-3",
+    "lessonId": "fn-declaration",
+    "difficulty": "intermediate",
+    "type": "boolean",
+    "prompt": "在 C11 的独立函数声明中，int get(); 与 int get(void); 都明确承诺没有参数。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "只有 (void) 明确指定没有参数；空括号的旧式声明没有提供参数数目和类型。",
+    "feedback": {
+      "0": "这两种声明在 C11 中对编译器提供的信息不同。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-parameters-1",
+    "lessonId": "fn-parameters",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "调用 set_to_zero(score)，函数体仅给 int 形参赋 0。返回后 score 会怎样？",
+    "options": [
+      {
+        "id": "0",
+        "text": "变成 0"
+      },
+      {
+        "id": "1",
+        "text": "自动变为返回值"
+      },
+      {
+        "id": "2",
+        "text": "保持原值"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "给形参赋值改变的是本次调用自己的对象。",
+    "feedback": {
+      "0": "按值传入 score 不会把它的存储位置交给形参。",
+      "1": "函数结果不会自动写回实参变量。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-parameters-2",
+    "lessonId": "fn-parameters",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "调用方执行下面的片段，输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "8 4"
+      },
+      {
+        "id": "1",
+        "text": "4 4"
+      },
+      {
+        "id": "2",
+        "text": "8 8"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "函数返回 n / 2 得到 4，score 没有被赋值。",
+    "feedback": {
+      "1": "把 score 作为实参时读取它，未改写它。",
+      "2": "result 接收的是 half 的返回值。"
+    },
+    "code": "int half(int n) { return n / 2; }\n\n/* 调用方 */\nint score = 8;\nint result = half(score);\nprintf(\"%d %d\\n\", score, result);",
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-parameters-3",
+    "lessonId": "fn-parameters",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "函数 step 返回 n + 1。补全调用，将返回值写回 n。",
+    "options": [
+      {
+        "id": "0",
+        "text": "step(n);"
+      },
+      {
+        "id": "1",
+        "text": "n = step(n);"
+      },
+      {
+        "id": "2",
+        "text": "step(n + 1);"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "右边调用用旧值计算，赋值再把返回值存到 n。",
+    "feedback": {
+      "0": "表达式语句丢弃返回值。",
+      "2": "先计算额外的加法，并且仍然丢弃返回值。"
+    },
+    "code": "int step(int n) { return n + 1; }\n\n/* 调用方 */\nint n = 4;\n___\nprintf(\"%d\\n\", n);",
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-return-1",
+    "lessonId": "fn-return",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "哪个声明表示 log_ready 不向调用者提供返回值？",
+    "options": [
+      {
+        "id": "0",
+        "text": "void log_ready(void);"
+      },
+      {
+        "id": "1",
+        "text": "int log_ready(void);"
+      },
+      {
+        "id": "2",
+        "text": "void *log_ready(void);"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "函数名左侧的 void 是返回类型，括号中的 void 表示没有参数。",
+    "feedback": {
+      "1": "它承诺返回 int。",
+      "2": "void * 是对象指针类型，函数仍有返回值。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-return-2",
+    "lessonId": "fn-return",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "该函数的两次调用留下什么输出？",
+    "options": [
+      {
+        "id": "0",
+        "text": "1 和 0"
+      },
+      {
+        "id": "1",
+        "text": "1"
+      },
+      {
+        "id": "2",
+        "text": "没有输出"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "第一次 show(1) 打印，第二次 show(0) 提前返回。",
+    "feedback": {
+      "0": "n 为 0 时先遇到 return;，不会执行 printf。",
+      "2": "第一调用的条件为假，会继续执行打印。"
+    },
+    "code": "void show(int n)\n{\n    if (n == 0)\n        return;\n    printf(\"%d\\n\", n);\n}\n\n/* 调用方 */\nshow(1);\nshow(0);",
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-return-3",
+    "lessonId": "fn-return",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "int parse(int n) 有一个分支能到达函数结尾而无 return，调用者需要使用结果。怎么修正？",
+    "options": [
+      {
+        "id": "0",
+        "text": "假定该分支自动返回 0"
+      },
+      {
+        "id": "1",
+        "text": "写 return;"
+      },
+      {
+        "id": "2",
+        "text": "让该分支也用 return 返回有定义的值"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "函数应为每条供调用者取值的路径提供返回值，例如约定的错误码。",
+    "feedback": {
+      "0": "main 的末尾特例不能推广到 parse。",
+      "1": "非 void 函数的 return 语句必须带有表达式。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-local-global-1",
+    "lessonId": "fn-local-global",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "文件作用域的定义 static int calls; 没有显式初始化，初始值是什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "不确定值"
+      },
+      {
+        "id": "1",
+        "text": "1"
+      },
+      {
+        "id": "2",
+        "text": "0"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "calls 具有静态存储期，算术类型的这类对象默认初始化为零。",
+    "feedback": {
+      "0": "这种情况常见于无初始化的自动存储期对象。",
+      "1": "C11 对这类 int 对象的默认值是零。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-local-global-2",
+    "lessonId": "fn-local-global",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "下面内层声明与外层同名，执行后输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "7，然后 2"
+      },
+      {
+        "id": "1",
+        "text": "7，然后 7"
+      },
+      {
+        "id": "2",
+        "text": "2，然后 2"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "内层 value 遮住外层名字，但没有修改外层对象。",
+    "feedback": {
+      "1": "内层语句声明新对象，未给外层赋值。",
+      "2": "在内层块中使用的是新声明的 value。"
+    },
+    "code": "int value = 2;\n{\n    int value = 7;\n    printf(\"%d\\n\", value);\n}\nprintf(\"%d\\n\", value);",
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-local-global-3",
+    "lessonId": "fn-local-global",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "如果只想让同一 .c 翻译单元中的辅助函数按名使用文件作用域对象，适合怎样定义？",
+    "options": [
+      {
+        "id": "0",
+        "text": "在某个辅助函数内写 int state;"
+      },
+      {
+        "id": "1",
+        "text": "在文件作用域写 static int state;"
+      },
+      {
+        "id": "2",
+        "text": "在文件作用域写 int state;"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "文件作用域的 static 赋予 state 内部链接，其他翻译单元不能通过同名声明引用它。",
+    "feedback": {
+      "0": "名字只在那个函数块中可见，其他辅助函数访问不了。",
+      "2": "这种定义通常有外部链接，不能表达只在本翻译单元内引用的意图。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-lifetime-1",
+    "lessonId": "fn-lifetime",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "块内 static int times; 的 times 名字通常在哪里可见？",
+    "options": [
+      {
+        "id": "0",
+        "text": "所有源文件"
+      },
+      {
+        "id": "1",
+        "text": "声明后的同一块内"
+      },
+      {
+        "id": "2",
+        "text": "只在第一次调用期间"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "static 使对象跨调用存在，名字仍有块作用域。",
+    "feedback": {
+      "0": "静态存储期不会把局部名字变成全局可见。",
+      "2": "可见性由源码位置决定，不由调用次数决定。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-lifetime-2",
+    "lessonId": "fn-lifetime",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "顺序执行两个独立的调用语句，输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "1，然后 2"
+      },
+      {
+        "id": "1",
+        "text": "0，然后 0"
+      },
+      {
+        "id": "2",
+        "text": "1，然后 1"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "每次进入 next 时都有一个初值为 0 的自动对象，++n 都得到 1。",
+    "feedback": {
+      "0": "只有共享某个持续存在的对象才能累计，这里 n 无 static。",
+      "1": "前置 ++ 返回的是递增后的值。"
+    },
+    "code": "int next(void) { int n = 0; return ++n; }\n\n/* 调用方 */\nprintf(\"%d\\n\", next());\nprintf(\"%d\\n\", next());",
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-lifetime-3",
+    "lessonId": "fn-lifetime",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "从函数返回一个局部自动变量的地址，调用者为何不能通过它继续访问原对象？",
+    "options": [
+      {
+        "id": "0",
+        "text": "原对象的生命周期已结束"
+      },
+      {
+        "id": "1",
+        "text": "因为局部变量的名字不能在调用者里写"
+      },
+      {
+        "id": "2",
+        "text": "只有恰好发生栈覆盖才出问题"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "离开函数块后自动对象不再存在，复制地址不会延长其生命周期。",
+    "feedback": {
+      "1": "名字是否可见属于作用域，使用地址能否访问对象取决于生命周期。",
+      "2": "标准并不以栈或覆盖痕迹作为判定条件。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-headers-1",
+    "lessonId": "fn-headers",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "一般把跨多个 .c 文件共用的函数原型放在哪里？",
+    "options": [
+      {
+        "id": "0",
+        "text": "项目头文件"
+      },
+      {
+        "id": "1",
+        "text": "只复制到每个函数体的局部块"
+      },
+      {
+        "id": "2",
+        "text": "已经生成的可执行文件"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "调用源文件和实现源文件都包含同一头文件，能发现接口类型不一致。",
+    "feedback": {
+      "1": "维护多份声明容易造成不一致，也限制作用域。",
+      "2": "编译调用点需要看到源码中的声明。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-headers-2",
+    "lessonId": "fn-headers",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "补全常见的头文件包含保护。",
+    "options": [
+      {
+        "id": "0",
+        "text": "ifdef"
+      },
+      {
+        "id": "1",
+        "text": "ifndef"
+      },
+      {
+        "id": "2",
+        "text": "include"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "第一次没有定义该宏，进入保护块；第二次该宏已定义，跳过。",
+    "feedback": {
+      "0": "已经定义宏才进入，与首次包含的条件相反。",
+      "2": "include 用于查找并包含指定文件，不判断宏是否定义。"
+    },
+    "code": "#___ C_SKELETON_COUNTER_H\n#define C_SKELETON_COUNTER_H\nint counter_next(void);\n#endif",
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-headers-3",
+    "lessonId": "fn-headers",
+    "difficulty": "intermediate",
+    "type": "boolean",
+    "prompt": "头文件采用包含保护后，可以在其中定义普通外部链接函数，供若干 .c 文件随意包含。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "保护宏只在各自预处理的翻译单元中防止重复展开，多个源文件仍各自得到一个定义。普通外部函数应由一个源文件提供定义。",
+    "feedback": {
+      "0": "包含保护不会在整个链接过程里全局去重函数定义。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-link-1",
+    "lessonId": "fn-link",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "把多个 .o 合成一个可执行文件并解析外部函数引用的是哪一步？",
+    "options": [
+      {
+        "id": "0",
+        "text": "#include"
+      },
+      {
+        "id": "1",
+        "text": "链接"
+      },
+      {
+        "id": "2",
+        "text": "编辑器保存 .c"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "链接器合并目标文件，并以某个文件或库提供的定义满足引用。",
+    "feedback": {
+      "0": "头文件包含发生在预处理阶段。",
+      "2": "保存源码并不产生目标文件或可执行文件。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-link-2",
+    "lessonId": "fn-link",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "在常见 GCC 工具链里，gcc -c main.c 通常生成什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "可以直接运行的 demo"
+      },
+      {
+        "id": "1",
+        "text": "main.h"
+      },
+      {
+        "id": "2",
+        "text": "main.o"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "-c 在生成目标文件后停止，省略链接。",
+    "feedback": {
+      "0": "可执行文件往往需要继续链接。",
+      "1": "头文件是构建的输入之一。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-link-3",
+    "lessonId": "fn-link",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "main.o 调用 scale，scale.o 已提供外部定义。gcc main.o -o demo 提示未定义引用，应先做什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "将 scale.o 加入链接命令"
+      },
+      {
+        "id": "1",
+        "text": "在 main.c 再复制一遍相同的原型"
+      },
+      {
+        "id": "2",
+        "text": "删除 scale.c 的头文件包含"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "已有原型足以编译调用，链接时仍需包含提供定义的目标文件。",
+    "feedback": {
+      "1": "额外声明不会产生 scale 的定义。",
+      "2": "头文件检查的是类型一致性，删除它不会让 scale.o 自动进入链接。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-review-1",
+    "lessonId": "fn-review",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "一个判定函数应把是否达标交给调用者，最直接的接口设计是什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "总是打印结果后返回 void"
+      },
+      {
+        "id": "1",
+        "text": "返回 0 或 1，由调用者决定用途"
+      },
+      {
+        "id": "2",
+        "text": "修改一个与输入同名的形参"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "把判断结果作为值返回，调用者可以计数、显示或继续比较。",
+    "feedback": {
+      "0": "打印不能直接作为调用者使用的判断值。",
+      "2": "形参按值传递，改写不会回传结果。"
+    },
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-review-2",
+    "lessonId": "fn-review",
+    "difficulty": "intermediate",
+    "type": "output",
+    "prompt": "追踪下面的两个调用，最终输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "9"
+      },
+      {
+        "id": "1",
+        "text": "2"
+      },
+      {
+        "id": "2",
+        "text": "1"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "2 小于 4，返回 0；7 大于等于 4，返回 1；相加得到 1。",
+    "feedback": {
+      "0": "传入的两个值不会直接相加，先各自经过判断。",
+      "1": "只有第二个调用返回 1。"
+    },
+    "code": "int meets(int n) { return n >= 4; }\n\n/* 调用方 */\nprintf(\"%d\\n\", meets(2) + meets(7));",
+    "moduleId": 2
+  },
+  {
+    "id": "q-fn-review-3",
+    "lessonId": "fn-review",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "补全辅助函数，让主程序可累计达到阈值的项目数。",
+    "options": [
+      {
+        "id": "0",
+        "text": "return value >= limit;"
+      },
+      {
+        "id": "1",
+        "text": "return value;"
+      },
+      {
+        "id": "2",
+        "text": "limit = value;"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "比较表达式返回 0 或 1，调用方能直接累加。",
+    "feedback": {
+      "1": "返回原始输入，累加就变成数值求和。",
+      "2": "赋值只修改形参，而且没有返回所需的判定值。"
+    },
+    "code": "int meets(int value, int limit)\n{\n    ___\n}",
+    "moduleId": 2
+  },
+  {
     "id": "p01",
     "moduleId": 3,
     "lessonId": "declaration",
@@ -405,5 +1755,2768 @@
       "1": "int (*)[] 是指向数组的指针，需要不同的声明。",
       "2": "这里是形参声明，函数收到指针。"
     }
+  },
+  {
+    "id": "q-ptr-double-1",
+    "lessonId": "ptr-double",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "如果声明了 int *p，要保存 &p 应使用哪个类型？",
+    "options": [
+      {
+        "id": "0",
+        "text": "int **"
+      },
+      {
+        "id": "1",
+        "text": "int *"
+      },
+      {
+        "id": "2",
+        "text": "int"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "&p 取得 int * 对象的地址，其类型再增加一层指针。",
+    "feedback": {
+      "1": "int * 指向 int 对象，p 本身是指针对象。",
+      "2": "int 保存整数值，不能直接保存 &p。"
+    },
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-double-2",
+    "lessonId": "ptr-double",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "代码显示什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "2 6"
+      },
+      {
+        "id": "1",
+        "text": "6 2"
+      },
+      {
+        "id": "2",
+        "text": "6 6"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "*pp = &right 写的是 p，于是 *p 访问 right；left 没有变化。",
+    "feedback": {
+      "0": "此赋值改变的是 p 的指向，不交换两个整数。",
+      "2": "没有向 left 写入 right 的值。"
+    },
+    "code": "int left = 2, right = 6;\nint *p = &left, **pp = &p;\n*pp = &right;\nprintf(\"%d %d\\n\", *p, left);",
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-double-3",
+    "lessonId": "ptr-double",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "让 set_target 改写调用者的指针 p，调用时怎样传第一个实参？",
+    "options": [
+      {
+        "id": "0",
+        "text": "p"
+      },
+      {
+        "id": "1",
+        "text": "*p"
+      },
+      {
+        "id": "2",
+        "text": "&p"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "形参 int **slot 要接收指针对象 p 的地址，*slot 才引用到 p 本身。",
+    "feedback": {
+      "0": "p 的类型为 int *，它指向整数。",
+      "1": "*p 是 int，而且在此处 p 为空，不能读取目标值。"
+    },
+    "code": "void set_target(int **slot, int *target) { *slot = target; }\n\n/* 调用方 */\nint x = 3;\nint *p = NULL;\nset_target(___, &x);",
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-array-types-1",
+    "lessonId": "ptr-array-types",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "int *p[4]; 声明了什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "指向四元素 int 数组的指针"
+      },
+      {
+        "id": "1",
+        "text": "四个 int 组成的数组"
+      },
+      {
+        "id": "2",
+        "text": "含四个 int * 元素的数组"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "[4] 先结合名字 p，它的每个元素再具有 int * 类型。",
+    "feedback": {
+      "0": "需要用 int (*p)[4] 让名字先与 * 结合。",
+      "1": "每个元素声明中还有 *，元素类型是指针。"
+    },
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-array-types-2",
+    "lessonId": "ptr-array-types",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "补全声明，使 row 保存整个 int values[4] 数组的地址。",
+    "options": [
+      {
+        "id": "0",
+        "text": "int (*row)[4]"
+      },
+      {
+        "id": "1",
+        "text": "int *row[4]"
+      },
+      {
+        "id": "2",
+        "text": "int *row"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "&values 的类型是指向 int[4] 的指针，括号保留该层次。",
+    "feedback": {
+      "1": "该写法声明四个指针组成的数组。",
+      "2": "它只适合保存指向单个 int 的地址，例如 &values[0]。"
+    },
+    "code": "int values[4] = {0};\n___ = &values;",
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-array-types-3",
+    "lessonId": "ptr-array-types",
+    "difficulty": "intermediate",
+    "type": "output",
+    "prompt": "row 指向第一行时，下列表达式输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "2"
+      },
+      {
+        "id": "1",
+        "text": "5"
+      },
+      {
+        "id": "2",
+        "text": "4"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "row + 1 跳过一个三元素行，解引用得第二行；行下标 1 对应 5。",
+    "feedback": {
+      "0": "2 位于第一行，row + 1 已移动到第二行。",
+      "2": "4 是第二行的下标 0 项。"
+    },
+    "code": "int grid[2][3] = {{1, 2, 3}, {4, 5, 6}};\nint (*row)[3] = grid;\nprintf(\"%d\\n\", (*(row + 1))[1]);",
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-lifetime-1",
+    "lessonId": "ptr-lifetime",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "下面哪种操作适用于已初始化的空指针 p？",
+    "options": [
+      {
+        "id": "0",
+        "text": "读取 *p"
+      },
+      {
+        "id": "1",
+        "text": "计算 p + 1 访问下一项"
+      },
+      {
+        "id": "2",
+        "text": "检查 p == NULL"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "空指针可用于相等比较，但没有可解引用的目标。",
+    "feedback": {
+      "0": "空指针不指向对象，通过它读取会导致未定义行为。",
+      "1": "空指针不指向数组元素，不能用于这种数组指针算术。"
+    },
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-lifetime-2",
+    "lessonId": "ptr-lifetime",
+    "difficulty": "basic",
+    "type": "boolean",
+    "prompt": "离开定义自动变量 x 的块后，之前保存的 &x 仍可用来读取 x。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "x 的生命周期已结束，保存地址不会延长对象生命周期。",
+    "feedback": {
+      "0": "原对象已经不存在，不能通过这个地址延续访问权限。"
+    },
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-lifetime-3",
+    "lessonId": "ptr-lifetime",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "若两个指针都指向即将释放的同一个对象，释放后给其中一个赋 NULL，有什么效果？",
+    "options": [
+      {
+        "id": "0",
+        "text": "另一个也自动变成 NULL"
+      },
+      {
+        "id": "1",
+        "text": "只让被赋值的指针保存明确的空值"
+      },
+      {
+        "id": "2",
+        "text": "该对象继续存活"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "两个指针是分别存放地址的对象，重置一个不会写入另一个。",
+    "feedback": {
+      "0": "复制地址不会把两个指针变量绑定在一起。",
+      "2": "对象的生命周期不会因剩余地址副本而延长。"
+    },
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-review-1",
+    "lessonId": "ptr-review",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "指针查找接口返回 NULL 后，调用方怎样处理？",
+    "options": [
+      {
+        "id": "0",
+        "text": "读取 *hit，约定结果为 0"
+      },
+      {
+        "id": "1",
+        "text": "给 hit 加一继续扫描"
+      },
+      {
+        "id": "2",
+        "text": "处理未找到的情况，不读取 *hit"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "空值是接口的结果信号，读取目标前必须检查它。",
+    "feedback": {
+      "0": "空指针没有目标，解引用没有可依赖的结果。",
+      "1": "空指针没有所属数组可供这种算术使用。"
+    },
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-review-2",
+    "lessonId": "ptr-review",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "data 有 count 个元素，补全条件，使循环不读 data[count]。",
+    "options": [
+      {
+        "id": "0",
+        "text": "i < count"
+      },
+      {
+        "id": "1",
+        "text": "i <= count"
+      },
+      {
+        "id": "2",
+        "text": "i < count + 1"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "先检查严格上界，只有在合法下标下才读取元素。",
+    "feedback": {
+      "1": "当 i 等于 count 时仍进入，越过最后一个元素。",
+      "2": "这个条件同样允许访问下标 count，在极大计数时还可能产生回绕。"
+    },
+    "code": "for (size_t i = 0; ___; ++i)\n    use(data[i]);",
+    "moduleId": 3
+  },
+  {
+    "id": "q-ptr-review-3",
+    "lessonId": "ptr-review",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "find 返回调用方自动存储期数组内某一元素的地址。退出该数组所在块后，哪项正确？",
+    "options": [
+      {
+        "id": "0",
+        "text": "find 的返回值让匹配元素在堆上继续存在"
+      },
+      {
+        "id": "1",
+        "text": "结果不再能用于访问该元素"
+      },
+      {
+        "id": "2",
+        "text": "先对该地址调用 free 可让生命周期归调用者管理"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "返回值只是借用数组中的位置。数组生命周期结束时各元素也已不存在。",
+    "feedback": {
+      "0": "这里没有创建新对象或分配空间。",
+      "2": "free 只能用于规定的分配结果或空指针，不能释放自动存储期数组的元素。"
+    },
+    "moduleId": 3
+  },
+  {
+    "id": "q-types-struct-1",
+    "lessonId": "types-struct",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "用哪个表达式读取结构体对象 record 的 id 成员？",
+    "options": [
+      {
+        "id": "0",
+        "text": "record->id"
+      },
+      {
+        "id": "1",
+        "text": "record.id"
+      },
+      {
+        "id": "2",
+        "text": "record[id]"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "点号的左侧是结构体对象，右侧是成员名。",
+    "feedback": {
+      "0": "箭头左侧应是指向结构体的指针。",
+      "2": "方括号用于数组或相关指针的下标访问。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-struct-2",
+    "lessonId": "types-struct",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "下面代码最终输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "9 9"
+      },
+      {
+        "id": "1",
+        "text": "4 4"
+      },
+      {
+        "id": "2",
+        "text": "4 9"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "b 按值复制 a，随后只给 b.count 赋值。",
+    "feedback": {
+      "0": "结构体的普通成员不会因为按值复制而共享存储。",
+      "1": "b.count 已被赋为 9。"
+    },
+    "code": "struct item { int count; };\nstruct item a = {4}, b = a;\nb.count = 9;\nprintf(\"%d %d\\n\", a.count, b.count);",
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-struct-3",
+    "lessonId": "types-struct",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "结构体含成员 int *data。将它按值复制后，若 data 指向有效对象，两份 data 起初指向哪里？",
+    "options": [
+      {
+        "id": "0",
+        "text": "同一个目标对象"
+      },
+      {
+        "id": "1",
+        "text": "各自拥有独立的新对象"
+      },
+      {
+        "id": "2",
+        "text": "复制品的 data 自动变为 NULL"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "结构体复制保留指针的值，会产生地址副本，不会分配或复制目标。",
+    "feedback": {
+      "1": "创建新目标并复制它需要额外操作。",
+      "2": "普通结构体赋值不会把指针成员清零。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-struct-pointer-1",
+    "lessonId": "types-struct-pointer",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "p 指向有效的 struct account 对象。补全成员访问，使 balance 增加 1。",
+    "options": [
+      {
+        "id": "0",
+        "text": "p.balance"
+      },
+      {
+        "id": "1",
+        "text": "*p.balance"
+      },
+      {
+        "id": "2",
+        "text": "p->balance"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "箭头先沿地址访问结构体对象，再取得 balance 成员。",
+    "feedback": {
+      "0": "点号左侧应为结构体本身，p 是指针。",
+      "1": "点号优先结合，表达式不会先解引用 p。"
+    },
+    "code": "void add_one(struct account *p)\n{\n    ___ += 1;\n}",
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-struct-pointer-2",
+    "lessonId": "types-struct-pointer",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "p->size 可以用哪种写法表达？",
+    "options": [
+      {
+        "id": "0",
+        "text": "(*p).size"
+      },
+      {
+        "id": "1",
+        "text": "*(p.size)"
+      },
+      {
+        "id": "2",
+        "text": "&p.size"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "括号先解引用 p 得到对象，再用点号访问 size。",
+    "feedback": {
+      "1": "p 本身不是带 size 成员的结构体。",
+      "2": "取址不能把指针变成结构体成员访问。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-struct-pointer-3",
+    "lessonId": "types-struct-pointer",
+    "difficulty": "intermediate",
+    "type": "boolean",
+    "prompt": "如果 struct job *p 是空指针，仍可以读取 p->done，因为只访问了成员。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "p->done 需要从 p 指向的结构体中定位并读取成员；空指针没有这个目标。",
+    "feedback": {
+      "0": "箭头没有替代对有效对象的要求。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-enum-typedef-1",
+    "lessonId": "types-enum-typedef",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "typedef unsigned long Count; 做了什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "声明一个名为 Count 的变量"
+      },
+      {
+        "id": "1",
+        "text": "为 unsigned long 引入名为 Count 的类型别名"
+      },
+      {
+        "id": "2",
+        "text": "保证 Count 的宽度是 64 位"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "Count 与 unsigned long 表示同一个类型，只是名字更符合业务语义。",
+    "feedback": {
+      "0": "typedef 声明的是类型名，未定义对象。",
+      "2": "typedef 不改变底层类型的范围或实现决定的宽度。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-enum-typedef-2",
+    "lessonId": "types-enum-typedef",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "运行在函数内部的下面代码输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "0"
+      },
+      {
+        "id": "1",
+        "text": "3"
+      },
+      {
+        "id": "2",
+        "text": "4"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "HIGH 没有显式赋值，取前一个枚举常量 LOW 的值加一。",
+    "feedback": {
+      "0": "只有未显式赋值的首个枚举常量默认是 0。",
+      "1": "HIGH 不会重复前一个显式值。"
+    },
+    "code": "enum { LOW = 3, HIGH };\nprintf(\"%d\\n\", HIGH);",
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-enum-typedef-3",
+    "lessonId": "types-enum-typedef",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "将状态写入规定恰好占一个八位组的协议时，哪种做法合适？",
+    "options": [
+      {
+        "id": "0",
+        "text": "按协议显式把各状态编码成数值并写入八位组"
+      },
+      {
+        "id": "1",
+        "text": "直接复制 sizeof(Status) 个字节"
+      },
+      {
+        "id": "2",
+        "text": "假定所有枚举都恰好 8 位"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "枚举对象的表示由实现决定，协议应定义稳定的外部编码。",
+    "feedback": {
+      "1": "该大小及表示不一定符合协议。",
+      "2": "C11 没有这个宽度保证。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-function-pointer-1",
+    "lessonId": "types-function-pointer",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "哪个声明表示指向接收 int 且返回 int 的函数的指针？",
+    "options": [
+      {
+        "id": "0",
+        "text": "int (*op)(int);"
+      },
+      {
+        "id": "1",
+        "text": "int *op(int);"
+      },
+      {
+        "id": "2",
+        "text": "int *op;"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "括号把 op 与 * 结合，再给它一个函数目标类型。",
+    "feedback": {
+      "1": "这声明了一个返回 int * 的函数。",
+      "2": "这声明的是指向整数对象的指针。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-function-pointer-2",
+    "lessonId": "types-function-pointer",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "补全调用，让 result 取得函数指针 op 对输入 3 的计算结果。",
+    "options": [
+      {
+        "id": "0",
+        "text": "op[3]"
+      },
+      {
+        "id": "1",
+        "text": "op(3)"
+      },
+      {
+        "id": "2",
+        "text": "&op"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "函数指针可直接用调用语法，目标函数的返回值作为表达式结果。",
+    "feedback": {
+      "0": "数组下标不能用于函数指针。",
+      "2": "取得指针变量自己的地址，不调用目标。"
+    },
+    "code": "int evaluate(int (*op)(int))\n{\n    int result = ___;\n    return result;\n}",
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-function-pointer-3",
+    "lessonId": "types-function-pointer",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "函数指针声明为 int (*op)(int)，是否可以把 double transform(double) 强制转换后安全调用？",
+    "options": [
+      {
+        "id": "0",
+        "text": "可以，调用时会按 transform 的定义自动改用 double"
+      },
+      {
+        "id": "1",
+        "text": "可以，只要把返回结果再转成 int"
+      },
+      {
+        "id": "2",
+        "text": "不能，调用必须使用兼容的函数类型"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "转换后的类型与实际定义不兼容，通过它调用会破坏 C11 对调用的约定。",
+    "feedback": {
+      "0": "调用表达式依赖函数指针声明的类型，不会查看目标的实际定义来调整。",
+      "1": "转换结果无法修复已经发生的不兼容调用。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-const-1",
+    "lessonId": "types-const",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "对 const int *p，下列哪项正确？",
+    "options": [
+      {
+        "id": "0",
+        "text": "p 不能换目标，但目标可写"
+      },
+      {
+        "id": "1",
+        "text": "p 可以换目标，但不能通过 *p 赋值"
+      },
+      {
+        "id": "2",
+        "text": "任何其他路径都不能修改 p 指向的整数"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "const 限定目标 int 的访问方式，p 本身不是 const。",
+    "feedback": {
+      "0": "这描述的是 int *const p。",
+      "2": "若原对象可写，其他可写别名仍可修改它。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-const-2",
+    "lessonId": "types-const",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "补全声明，使 p 初始化后不能重新赋地址，且可通过 *p 更新 value。",
+    "options": [
+      {
+        "id": "0",
+        "text": "const int *p"
+      },
+      {
+        "id": "1",
+        "text": "const int *const p"
+      },
+      {
+        "id": "2",
+        "text": "int *const p"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "const 放在星号之后限定 p 本身，目标 int 保持可写。",
+    "feedback": {
+      "0": "这个 const 限制对目标写入，p 可以换地址。",
+      "1": "目标不能通过这个指针写入。"
+    },
+    "code": "int value = 5;\n___ = &value;",
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-const-3",
+    "lessonId": "types-const",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "若 const int count = 4;，能否通过把 &count 转成 int * 后写入 8 来安全修改它？",
+    "options": [
+      {
+        "id": "0",
+        "text": "不能，尝试修改定义为 const 的对象会产生未定义行为"
+      },
+      {
+        "id": "1",
+        "text": "可以，强制转换已移除对象上的限定"
+      },
+      {
+        "id": "2",
+        "text": "可以，只要 count 并未放在只读内存"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "强制转换不改变原对象的限定；C11 禁止通过去限定的左值改写真正的 const 对象。",
+    "feedback": {
+      "1": "转换改变表达式的类型，不会改变 count 的定义。",
+      "2": "C 语义不取决于编译器把对象放在何处。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-void-pointer-1",
+    "lessonId": "types-void-pointer",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "void *p 保存 &value，而 value 是仍然有效的 int 对象。如何读其值？",
+    "options": [
+      {
+        "id": "0",
+        "text": "直接在 printf 中传 *p 作为 int"
+      },
+      {
+        "id": "1",
+        "text": "用 p + 1 获得值"
+      },
+      {
+        "id": "2",
+        "text": "先转回 int *，再解引用"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "void * 不包含可用的目标类型，恢复 int * 后可访问原对象。",
+    "feedback": {
+      "0": "通过 void * 无法得到 int 左值。",
+      "1": "C11 不定义对 void * 的这种算术，也没有发生读值。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-void-pointer-2",
+    "lessonId": "types-void-pointer",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "ctx 由一个有效的 const struct record * 转成，补全恢复类型，并保持只读约定。",
+    "options": [
+      {
+        "id": "0",
+        "text": "const struct record *"
+      },
+      {
+        "id": "1",
+        "text": "const void *"
+      },
+      {
+        "id": "2",
+        "text": "struct record"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "恢复具体结构体类型时，应保留目标对象的 const 限定。",
+    "feedback": {
+      "1": "这仍缺少访问 id 所需的具体类型。",
+      "2": "这是对象类型，不是能存地址的指针类型。"
+    },
+    "code": "___ record = ctx;\nprintf(\"%d\\n\", record->id);",
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-void-pointer-3",
+    "lessonId": "types-void-pointer",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "关于用 void * 在可移植 C11 中保存地址，哪项正确？",
+    "options": [
+      {
+        "id": "0",
+        "text": "对象指针和函数指针都保证可以经 void * 往返"
+      },
+      {
+        "id": "1",
+        "text": "可用于对象指针转换，不保证用于函数指针"
+      },
+      {
+        "id": "2",
+        "text": "通过 void * 可直接调用函数"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "标准提供对象指针经 void * 的往返规则；函数指针遵循自己的转换和调用约定。",
+    "feedback": {
+      "0": "某些平台的扩展不能代替 C11 保证。",
+      "2": "void * 没有调用所需的参数和返回类型。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-strings-1",
+    "lessonId": "types-strings",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "下面代码显示什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "2 6"
+      },
+      {
+        "id": "1",
+        "text": "2 2"
+      },
+      {
+        "id": "2",
+        "text": "3 6"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "字符串 hi 的长度为 2，但该数组明确分配了 6 个 char。",
+    "feedback": {
+      "1": "sizeof 统计全部数组位置。",
+      "2": "strlen 在第一个空字符前停止，不把它计入。"
+    },
+    "code": "char text[6] = \"hi\";\nprintf(\"%zu %zu\\n\", strlen(text), sizeof text);",
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-strings-2",
+    "lessonId": "types-strings",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "哪种写法创建可修改首字母的字符串数组？",
+    "options": [
+      {
+        "id": "0",
+        "text": "char *text = \"dog\";"
+      },
+      {
+        "id": "1",
+        "text": "char text[] = \"dog\";"
+      },
+      {
+        "id": "2",
+        "text": "const char *text = \"dog\";"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "数组初始化复制字面量，随后可以改写数组中的字符。",
+    "feedback": {
+      "0": "它取得字面量地址，C11 仍禁止修改字面量。",
+      "2": "这个指针提供只读访问，也未创建独立字符数组。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-strings-3",
+    "lessonId": "types-strings",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "输入的三个字符是 a、空字符和 b。调用 strlen 读取该序列会返回多少？",
+    "options": [
+      {
+        "id": "0",
+        "text": "3"
+      },
+      {
+        "id": "1",
+        "text": "2"
+      },
+      {
+        "id": "2",
+        "text": "1"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "strlen 在第一个空字符处停止；空字符之后的 b 不属于这个字符串。",
+    "feedback": {
+      "0": "这是原始缓冲区的字符数量，strlen 不读取所有容量。",
+      "1": "strlen 不把 a 后的空字符计入。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-allocation-1",
+    "lessonId": "types-allocation",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "读刚由 malloc 成功分配的 int 元素之前，应先做什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "什么都不用做，元素必定为零"
+      },
+      {
+        "id": "1",
+        "text": "先 free，再从相同地址读取"
+      },
+      {
+        "id": "2",
+        "text": "把有效的 int 值写入该元素"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "malloc 提供存储，但不初始化其内容。",
+    "feedback": {
+      "0": "位清零是 calloc 的行为，malloc 不作此保证。",
+      "1": "free 后存储的生命周期已经结束。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-allocation-2",
+    "lessonId": "types-allocation",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "p 具有 int * 类型，所需大小可用 size_t 表示。选择按目标类型计算恰好 4 个 int 所需空间的可移植写法。",
+    "options": [
+      {
+        "id": "0",
+        "text": "4 * sizeof *p"
+      },
+      {
+        "id": "1",
+        "text": "4"
+      },
+      {
+        "id": "2",
+        "text": "4 * sizeof p"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "每个目标元素占 sizeof *p 个 C 字节，乘以元素数得到所需容量。",
+    "feedback": {
+      "1": "4 只表示四个 C 字节；不同实现中的 int 大小不固定。",
+      "2": "这按四个指针的大小计算，与四个 int 所需的布局没有必然关系。"
+    },
+    "code": "int *p = malloc(___);",
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-allocation-3",
+    "lessonId": "types-allocation",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "p 由 malloc 返回且有效。以非零大小调用 realloc(p, new_size) 返回 NULL 后，哪项正确？",
+    "options": [
+      {
+        "id": "0",
+        "text": "原分配已自动释放"
+      },
+      {
+        "id": "1",
+        "text": "原分配仍有效，可以用 p 继续处理或释放"
+      },
+      {
+        "id": "2",
+        "text": "即使执行 p = realloc(p, new_size)，也可从 NULL 取回原地址"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "realloc 未能分配新空间时保留旧对象，所以要先把返回值存在临时指针中。",
+    "feedback": {
+      "0": "非零大小的调整失败不会释放原对象。",
+      "2": "赋值会覆盖唯一地址，NULL 不记录旧分配。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-stdlib-1",
+    "lessonId": "types-stdlib",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "strtol 的结束指针用于了解什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "返回的整数占多少内存"
+      },
+      {
+        "id": "1",
+        "text": "输入数字原本使用的长度总是固定的"
+      },
+      {
+        "id": "2",
+        "text": "转换在输入中的哪个位置停止"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "它可用于区分没有读取数字、完整读取和仍有后缀字符的情形。",
+    "feedback": {
+      "0": "整数对象的存储大小用 sizeof 对相应类型或对象取得。",
+      "1": "实际停止位置依赖输入内容与指定基数。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-stdlib-2",
+    "lessonId": "types-stdlib",
+    "difficulty": "intermediate",
+    "type": "output",
+    "prompt": "不发生范围错误时，这段代码输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "12 x"
+      },
+      {
+        "id": "1",
+        "text": "0 x"
+      },
+      {
+        "id": "2",
+        "text": "12 终止空字符"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "strtol 读取开头的 12，遇到非十进制数字 x 停止，end 指到 x。",
+    "feedback": {
+      "1": "已有前缀可转换，末尾有 x 不会抹掉转换值。",
+      "2": "x 未被转换，因此 end 没有走到字符串末尾。"
+    },
+    "code": "char *end;\nlong n = strtol(\"12x\", &end, 10);\nprintf(\"%ld %c\\n\", n, *end);",
+    "moduleId": 4
+  },
+  {
+    "id": "q-types-stdlib-3",
+    "lessonId": "types-stdlib",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "qsort 对元素类型为 int 的数组排序时，第三个参数应给什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "sizeof values"
+      },
+      {
+        "id": "1",
+        "text": "sizeof values[0]"
+      },
+      {
+        "id": "2",
+        "text": "数组元素个数"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "qsort 需要每个元素的字节跨度，才能定位各元素。",
+    "feedback": {
+      "0": "对数组对象，这是整个数组的大小。",
+      "2": "这是 qsort 的第二个参数，不能作为单个元素的大小。"
+    },
+    "moduleId": 4
+  },
+  {
+    "id": "q-low-number-bases-1",
+    "lessonId": "low-number-bases",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "0x1F 的十进制数值是多少？",
+    "options": [
+      {
+        "id": "0",
+        "text": "15"
+      },
+      {
+        "id": "1",
+        "text": "25"
+      },
+      {
+        "id": "2",
+        "text": "31"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "高位 1 表示 16，低位 F 表示 15，合计 31。",
+    "feedback": {
+      "0": "只算了低位 F。",
+      "1": "高位权重是 16，而 F 的值是 15。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-number-bases-2",
+    "lessonId": "low-number-bases",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "下面代码如何显示 value？",
+    "options": [
+      {
+        "id": "0",
+        "text": "16 10"
+      },
+      {
+        "id": "1",
+        "text": "10 10"
+      },
+      {
+        "id": "2",
+        "text": "16 16"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "0x10 是十进制 16，%X 用十六进制显示同一数值。",
+    "feedback": {
+      "1": "源文件的十六进制写法不会让 %u 按十六进制输出。",
+      "2": "%X 的格式与十进制不同。"
+    },
+    "code": "unsigned value = 0x10u;\nprintf(\"%u %X\\n\", value, value);",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-number-bases-3",
+    "lessonId": "low-number-bases",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "在仅允许标准 C11、关闭编译器扩展的项目中，怎样写数值 10 的十六进制形式？",
+    "options": [
+      {
+        "id": "0",
+        "text": "0b1010u"
+      },
+      {
+        "id": "1",
+        "text": "0xAu"
+      },
+      {
+        "id": "2",
+        "text": "010u"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "0x 是标准十六进制前缀，A 的数值是 10。",
+    "feedback": {
+      "0": "0b 不是 C11 标准前缀。",
+      "2": "前导 0 表示八进制，010 表示十进制 8。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-bitmasks-1",
+    "lessonId": "low-bitmasks",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "flags 与 mask 都是 unsigned。补全表达式以设置 mask 中指定的所有位。",
+    "options": [
+      {
+        "id": "0",
+        "text": "flags &= mask;"
+      },
+      {
+        "id": "1",
+        "text": "flags |= mask;"
+      },
+      {
+        "id": "2",
+        "text": "flags ^= mask;"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "按位或使被选中的位变成 1，其余位保持原值。",
+    "feedback": {
+      "0": "按位与会清除没有被选中的位。",
+      "2": "异或会翻转指定的位，原先已置位的位反而被清除。"
+    },
+    "code": "unsigned flags = 2u;\nunsigned mask = 4u;\n___",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-bitmasks-2",
+    "lessonId": "low-bitmasks",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "下面代码输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "1"
+      },
+      {
+        "id": "1",
+        "text": "6"
+      },
+      {
+        "id": "2",
+        "text": "4"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "只有二进制位 2 在 6 与 4 中都为 1，按位与结果为 4。",
+    "feedback": {
+      "0": "逻辑与才会把两个非零值的组合结果表示为 1。",
+      "1": "6 还含一个不在掩码中的位。"
+    },
+    "code": "printf(\"%u\\n\", 6u & 4u);",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-bitmasks-3",
+    "lessonId": "low-bitmasks",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "用 unsigned flags 表示多个标志，如何判断 mask 中指定的位是否全部出现？",
+    "options": [
+      {
+        "id": "0",
+        "text": "(flags & mask) == mask"
+      },
+      {
+        "id": "1",
+        "text": "(flags & mask) != 0u"
+      },
+      {
+        "id": "2",
+        "text": "flags == mask"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "按位与只留下关心的位，再与完整掩码比较。",
+    "feedback": {
+      "1": "这只检查至少存在一个被选中的位。",
+      "2": "这还要求掩码以外的所有标志都未设置。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-sizeof-1",
+    "lessonId": "low-sizeof",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "C11 对 sizeof(char) 有什么保证？",
+    "options": [
+      {
+        "id": "0",
+        "text": "恒为 8 个 C 字节"
+      },
+      {
+        "id": "1",
+        "text": "等于 sizeof(int)"
+      },
+      {
+        "id": "2",
+        "text": "恒为 1 个 C 字节"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "char 使用 C 的字节计量单位；一个字节有多少位需要查 CHAR_BIT。",
+    "feedback": {
+      "0": "混淆了可能的位数与字节数。",
+      "1": "标准没有规定 char 与 int 必须同样大。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-sizeof-2",
+    "lessonId": "low-sizeof",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "bytes 的类型为 size_t。补全标准格式以使用十进制显示它。",
+    "options": [
+      {
+        "id": "0",
+        "text": "\"%zu\\n\""
+      },
+      {
+        "id": "1",
+        "text": "\"%d\\n\""
+      },
+      {
+        "id": "2",
+        "text": "\"%p\\n\""
+      }
+    ],
+    "answerId": "0",
+    "explanation": "z 对应 size_t，u 按无符号十进制输出。",
+    "feedback": {
+      "1": "%d 对应 int 参数，不能可移植地匹配 size_t。",
+      "2": "%p 格式用于 void * 值。"
+    },
+    "code": "size_t bytes = sizeof(long);\nprintf(___, bytes);",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-sizeof-3",
+    "lessonId": "low-sizeof",
+    "difficulty": "intermediate",
+    "type": "output",
+    "prompt": "下面代码最终显示的 x 是多少？",
+    "options": [
+      {
+        "id": "0",
+        "text": "6"
+      },
+      {
+        "id": "1",
+        "text": "5"
+      },
+      {
+        "id": "2",
+        "text": "由 int 的宽度决定"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "普通 int 表达式作为 sizeof 操作数时不求值，所以 x 未改写。",
+    "feedback": {
+      "0": "自增表达式没有实际执行。",
+      "2": "宽度会影响 sizeof 的值，不决定该表达式是否被求值。"
+    },
+    "code": "int x = 5;\nsize_t bytes = sizeof(++x);\n(void)bytes;\nprintf(\"%d\\n\", x);",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-alignment-1",
+    "lessonId": "low-alignment",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "如何查询类型 int 的对齐要求？",
+    "options": [
+      {
+        "id": "0",
+        "text": "sizeof(int)"
+      },
+      {
+        "id": "1",
+        "text": "strlen((char *)&value)"
+      },
+      {
+        "id": "2",
+        "text": "_Alignof(int)"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "C11 的 _Alignof 运算符以 C 字节为单位给出类型的对齐要求。",
+    "feedback": {
+      "0": "sizeof 给的是存储大小，对齐要求不一定等于这个大小。",
+      "1": "字符串函数不能查询对象对齐。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-alignment-2",
+    "lessonId": "low-alignment",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "为什么不宜直接把结构体对象的原始字节当成固定的网络协议？",
+    "options": [
+      {
+        "id": "0",
+        "text": "填充、整数宽度和字节序可能因实现或平台而异"
+      },
+      {
+        "id": "1",
+        "text": "只要成员按声明顺序排列，布局就固定"
+      },
+      {
+        "id": "2",
+        "text": "把对象声明成 const 就能消除填充"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "协议应定义每个字段的字节位置和外部编码，再按规则显式读写。",
+    "feedback": {
+      "1": "成员顺序固定仍不等于各成员偏移和表示固定。",
+      "2": "const 限定访问，不能固定结构体布局。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-alignment-3",
+    "lessonId": "low-alignment",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "假设 ABI 中 char 大小和对齐均为 1，int 大小和对齐均为 4，结构体按最大成员对齐且只填充必需字节。下面类型的 sizeof 是多少？",
+    "options": [
+      {
+        "id": "0",
+        "text": "6"
+      },
+      {
+        "id": "1",
+        "text": "12"
+      },
+      {
+        "id": "2",
+        "text": "9"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "tag 在 0，value 对齐到 4 并占到 7，flag 在 8；总长度再补齐到 4 的倍数。",
+    "feedback": {
+      "0": "只相加了成员的大小，漏掉对齐填充。",
+      "2": "算到了最后一个成员的末尾，还需尾部填充以满足结构体对齐。"
+    },
+    "code": "struct packet { char tag; int value; char flag; };",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-widths-1",
+    "lessonId": "low-widths",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "要求无符号整数至少有 16 位，同时不能依赖固定宽度类型一定存在，应优先选哪个？",
+    "options": [
+      {
+        "id": "0",
+        "text": "int8_t"
+      },
+      {
+        "id": "1",
+        "text": "uint16_t 并假定所有实现必有"
+      },
+      {
+        "id": "2",
+        "text": "uint_least16_t"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "C11 提供 uint_least16_t，其表示能力至少包含 16 个值位。",
+    "feedback": {
+      "0": "固定 8 位有符号类型无法满足该无符号范围。",
+      "1": "固定宽度类型依赖实现有符合要求的类型。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-widths-2",
+    "lessonId": "low-widths",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "是否能据 int 的名字断定 sizeof(int) 必为 4？",
+    "options": [
+      {
+        "id": "0",
+        "text": "不能，应根据实现的 sizeof 与范围查询"
+      },
+      {
+        "id": "1",
+        "text": "能，系统位数决定 int 必为 4"
+      },
+      {
+        "id": "2",
+        "text": "能，因为 sizeof(char) 固定是 1"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "C11 规定了 int 的最小范围，但不指定其固定对象大小。",
+    "feedback": {
+      "1": "不同 ABI 的整数布局不是 C11 的统一要求。",
+      "2": "char 的字节单位不能推出 int 占几个字节。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-widths-3",
+    "lessonId": "low-widths",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "n 的类型为 uint_least32_t。选择 <inttypes.h> 中适合无符号十进制输出的宏。",
+    "options": [
+      {
+        "id": "0",
+        "text": "PRIu32"
+      },
+      {
+        "id": "1",
+        "text": "PRIuLEAST32"
+      },
+      {
+        "id": "2",
+        "text": "PRIdLEAST32"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "标准库为该类型提供的格式宏能适应不同实现的底层宽度。",
+    "feedback": {
+      "0": "该宏对应可选的固定宽度 uint32_t。",
+      "2": "d 对应有符号十进制表示。"
+    },
+    "code": "printf(\"%\" ___ \"\\n\", n);",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-signedness-1",
+    "lessonId": "low-signedness",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "对 unsigned int n = UINT_MAX; 执行 ++n 后，n 的值是什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "UINT_MAX"
+      },
+      {
+        "id": "1",
+        "text": "0"
+      },
+      {
+        "id": "2",
+        "text": "未定义"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "无符号类型的结果按比最大值大 1 的模数化简。",
+    "feedback": {
+      "0": "C11 的无符号计算不会在最大值饱和。",
+      "2": "无符号结果的回绕是标准定义的行为。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-signedness-2",
+    "lessonId": "low-signedness",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "如果 signed int n 已等于 INT_MAX，哪种方式适合在自增前判断还能否加一？",
+    "options": [
+      {
+        "id": "0",
+        "text": "先计算 n + 1，再看它是否为负"
+      },
+      {
+        "id": "1",
+        "text": "假定 n 会像 unsigned 一样回绕"
+      },
+      {
+        "id": "2",
+        "text": "先检查 n < INT_MAX"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "在加法前检查其结果是否可表示，条件为假时不执行自增。",
+    "feedback": {
+      "0": "有符号溢出已经发生，无法靠事后检测获得可移植结果。",
+      "1": "C11 不为有符号溢出规定回绕。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-signedness-3",
+    "lessonId": "low-signedness",
+    "difficulty": "advanced",
+    "type": "output",
+    "prompt": "除去输出本身的 I/O 错误，下面比较输出什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "0"
+      },
+      {
+        "id": "1",
+        "text": "1"
+      },
+      {
+        "id": "2",
+        "text": "取决于 unsigned 的确切位数"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "左边 -1 是 int，和 unsigned int 比较时转换为 UINT_MAX，因此小于 1u 为假。",
+    "feedback": {
+      "1": "数学上 -1 小于 1，但 C 先按公共类型转换。",
+      "2": "只要符合 C11，UINT_MAX 必大于 1，这一比较结果不依赖具体位数。"
+    },
+    "code": "printf(\"%d\\n\", -1 < 1u);",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-pointer-conversion-1",
+    "lessonId": "low-pointer-conversion",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "要用 %p 输出 int *p 表示的地址，应怎样传入参数？",
+    "options": [
+      {
+        "id": "0",
+        "text": "(void *)p"
+      },
+      {
+        "id": "1",
+        "text": "*p"
+      },
+      {
+        "id": "2",
+        "text": "(unsigned)p"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "%p 要求 void * 参数，显示形式由实现决定。",
+    "feedback": {
+      "1": "这是解引用得到的 int，若 p 无有效目标还会发生非法访问。",
+      "2": "转换后的整数并不是 %p 所需类型。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-pointer-conversion-2",
+    "lessonId": "low-pointer-conversion",
+    "difficulty": "basic",
+    "type": "boolean",
+    "prompt": "所有符合 C11 的实现都必须提供 uintptr_t。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "uintptr_t 是为有效 void * 往返而定义的可选无符号整数类型。",
+    "feedback": {
+      "0": "实现可以在没有合适表示时不提供这个类型；可用 UINTPTR_MAX 做条件编译。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-pointer-conversion-3",
+    "lessonId": "low-pointer-conversion",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "已将指向对象的 void * 转为 uintptr_t。在整数值上加一再转回指针，标准保证什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "保证字节地址增加 1 并可解引用"
+      },
+      {
+        "id": "1",
+        "text": "保证地址自动按原对象类型对齐"
+      },
+      {
+        "id": "2",
+        "text": "不保证结果能作为有效的下一字节地址"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "往返保证针对原样保存的整数值，不能推广到整数运算后的编码。",
+    "feedback": {
+      "0": "适当的字节指针算术才依赖对象的实际范围，整数编码没有该保证。",
+      "1": "整数转换不会自动提供可访问的对齐或对象。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-undefined-1",
+    "lessonId": "low-undefined",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "读取 int a[2] 的 a[2] 时，C11 对结果有什么保证？",
+    "options": [
+      {
+        "id": "0",
+        "text": "总是读取相邻变量"
+      },
+      {
+        "id": "1",
+        "text": "未定义行为，没有可依赖的输出"
+      },
+      {
+        "id": "2",
+        "text": "总是抛出异常"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "下标 2 是尾后位置，不能解引用读取。",
+    "feedback": {
+      "0": "标准不要求存在或读取相邻的可访问对象。",
+      "2": "一些运行会出现故障，标准并不要求发生异常。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-undefined-2",
+    "lessonId": "low-undefined",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "a 为 int 且值为 12。补全条件，避免整数除零。",
+    "options": [
+      {
+        "id": "0",
+        "text": "a != 0"
+      },
+      {
+        "id": "1",
+        "text": "d >= 0"
+      },
+      {
+        "id": "2",
+        "text": "d != 0"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "在进入包含除法的块之前验证除数非零。",
+    "feedback": {
+      "0": "a 是被除数，这个判断不约束 d。",
+      "1": "大于等于零仍允许 d 为 0。"
+    },
+    "code": "if (___)\n    printf(\"%d\\n\", a / d);",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-undefined-3",
+    "lessonId": "low-undefined",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "C11 中普通 char 采用有符号还是无符号表示，属于哪种情况？",
+    "options": [
+      {
+        "id": "0",
+        "text": "实现定义，需由实现说明"
+      },
+      {
+        "id": "1",
+        "text": "使用 char 就会触发未定义行为"
+      },
+      {
+        "id": "2",
+        "text": "所有实现一律采用有符号"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "普通 char 可以与 signed char 或 unsigned char 有相同的范围和行为，具体选择由实现定义。",
+    "feedback": {
+      "1": "这是一项允许的实现选择。",
+      "2": "C11 同样允许普通 char 采用无符号行为。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-memory-safety-1",
+    "lessonId": "low-memory-safety",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "哪个条件最适合确认下标 index 可以访问具有 capacity 个元素的非空数组？",
+    "options": [
+      {
+        "id": "0",
+        "text": "index < capacity（两者都是 size_t）"
+      },
+      {
+        "id": "1",
+        "text": "index <= capacity"
+      },
+      {
+        "id": "2",
+        "text": "index != 0"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "有效下标从 0 至 capacity - 1，size_t 排除了负下标。",
+    "feedback": {
+      "1": "等于 capacity 时越过最后一个元素。",
+      "2": "0 是合法下标，其他下标仍有可能越界。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-memory-safety-2",
+    "lessonId": "low-memory-safety",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "count 和 elem 都是 size_t，elem 非零。补全检查，防止乘积超出 size_t 范围。",
+    "options": [
+      {
+        "id": "0",
+        "text": "count * elem > SIZE_MAX"
+      },
+      {
+        "id": "1",
+        "text": "count > SIZE_MAX / elem"
+      },
+      {
+        "id": "2",
+        "text": "count > SIZE_MAX - elem"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "用除法先算可接受的最大 count，再比较。",
+    "feedback": {
+      "0": "这会先求乘积，运算或结果转换可能已超出范围。size_t 较窄时还可能先提升为 int。",
+      "2": "减法界限适合加法溢出检查，这里计算的是乘积。"
+    },
+    "code": "if (___)\n    return EXIT_FAILURE;\nvoid *data = malloc(count * elem);",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-memory-safety-3",
+    "lessonId": "low-memory-safety",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "一个函数借用了调用者的缓冲区地址。何时需要停止通过它访问缓冲区？",
+    "options": [
+      {
+        "id": "0",
+        "text": "只在地址变为 NULL 时才停止"
+      },
+      {
+        "id": "1",
+        "text": "只在缓冲区重新被写入后停止"
+      },
+      {
+        "id": "2",
+        "text": "缓冲区的有效生命周期结束之前"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "借用不会延长对象生命，释放或退出相应作用域后不能继续访问。",
+    "feedback": {
+      "0": "悬空引用不会自动更新为空指针。",
+      "1": "写入与否不能决定一个已结束的对象是否可访问。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-volatile-1",
+    "lessonId": "low-volatile",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "volatile 是否能让两个线程安全执行共享变量的 ++？",
+    "options": [
+      {
+        "id": "0",
+        "text": "不能，++ 仍需要合适的原子操作或锁"
+      },
+      {
+        "id": "1",
+        "text": "能，每次都访问内存就等于原子"
+      },
+      {
+        "id": "2",
+        "text": "能，只要变量声明为 unsigned"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "volatile 不会把读、改、写组成一个原子操作，也不提供线程同步。",
+    "feedback": {
+      "1": "保留访问不能阻止另一个线程介入。",
+      "2": "整数类型也不自动消除数据竞争。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-volatile-2",
+    "lessonId": "low-volatile",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "补全限定符，表达这一普通用户态演示变量的访问应按 volatile 规则进行。",
+    "options": [
+      {
+        "id": "0",
+        "text": "const"
+      },
+      {
+        "id": "1",
+        "text": "volatile"
+      },
+      {
+        "id": "2",
+        "text": "static"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "volatile 表示该对象的访问应按实现对易变对象的规则处理。",
+    "feedback": {
+      "0": "const 限制写入，不提供这种访问语义。",
+      "2": "static 影响存储期或链接，不提供这种访问语义。"
+    },
+    "code": "___ unsigned status = 1u;\nunsigned snapshot = status;",
+    "moduleId": 5
+  },
+  {
+    "id": "q-low-volatile-3",
+    "lessonId": "low-volatile",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "只知道 MMIO 寄存器访问使用 volatile 指针，还应从设备及平台文档确认什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "不用确认，所有设备都与普通 RAM 一样读写"
+      },
+      {
+        "id": "1",
+        "text": "只确认变量名正确即可"
+      },
+      {
+        "id": "2",
+        "text": "可用的访问宽度、顺序与必要的屏障"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "volatile 描述 C 的访问语义，设备与体系结构另有访问要求。",
+    "feedback": {
+      "0": "读取或写入寄存器可能触发设备行为，而且平台有不同约束。",
+      "1": "变量名无法验证映射、对齐、宽度或总线顺序。"
+    },
+    "moduleId": 5
+  },
+  {
+    "id": "q-os-user-kernel-1",
+    "lessonId": "os-user-kernel",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "普通用户程序需要执行只能由内核完成的操作，典型做法是什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "换用 unsigned 指针访问地址"
+      },
+      {
+        "id": "1",
+        "text": "通过操作系统定义的系统调用等接口请求服务"
+      },
+      {
+        "id": "2",
+        "text": "把 main 改名为 kernel"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "内核在受控入口处理请求并检查权限，用户态代码不能直接执行特权操作。",
+    "feedback": {
+      "0": "C 类型不会改变处理器权限或操作系统保护。",
+      "2": "函数名不会改变程序的执行模式。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-user-kernel-2",
+    "lessonId": "os-user-kernel",
+    "difficulty": "basic",
+    "type": "boolean",
+    "prompt": "用 C 编写内核时，可以假定与用户态进程拥有相同的 malloc 和标准输出。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "内核的运行与链接环境由平台和内核实现定义，通常使用自己的分配与日志设施。",
+    "feedback": {
+      "0": "共享编程语言不等于共享宿主运行库和资源接口。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-user-kernel-3",
+    "lessonId": "os-user-kernel",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "一次 C 标准库调用是否一定立刻产生一次系统调用？",
+    "options": [
+      {
+        "id": "0",
+        "text": "不一定，库可能在用户态完成工作或缓存操作"
+      },
+      {
+        "id": "1",
+        "text": "一定，因为所有 C 代码都在内核执行"
+      },
+      {
+        "id": "2",
+        "text": "一定不会，因为接口名不是 syscall"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "库接口与内核入口处于不同层次，具体行为取决于库实现和操作。",
+    "feedback": {
+      "1": "普通宿主程序通常在用户态运行。",
+      "2": "库实现可在内部调用操作系统接口。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-addresses-1",
+    "lessonId": "os-addresses",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "不同进程中显示的两个相同虚拟地址，是否一定指向同一个物理位置？",
+    "options": [
+      {
+        "id": "0",
+        "text": "不一定，要看各自的地址空间映射"
+      },
+      {
+        "id": "1",
+        "text": "一定，是同一数字所以物理地址相同"
+      },
+      {
+        "id": "2",
+        "text": "一定不同，因为进程无法共享内存"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "虚拟地址需要结合进程的映射解释；可映射到不同页框，也可以共享。",
+    "feedback": {
+      "1": "数字相同并没有指定采用哪套映射。",
+      "2": "映射可以将不同地址空间指向同一物理存储。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-addresses-2",
+    "lessonId": "os-addresses",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "在下面的整数模型中，PAGE 为 16，虚拟地址为 19。计算得到的页内偏移是多少？",
+    "options": [
+      {
+        "id": "0",
+        "text": "1"
+      },
+      {
+        "id": "1",
+        "text": "3"
+      },
+      {
+        "id": "2",
+        "text": "19"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "19 除以 16 的余数是 3，表示页内位置。",
+    "feedback": {
+      "0": "1 是页号，即除法的整数商。",
+      "2": "这是整个虚拟地址，不是页内偏移。"
+    },
+    "code": "unsigned address = 19u;\nprintf(\"%u\\n\", address % 16u);",
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-addresses-3",
+    "lessonId": "os-addresses",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "某分页模型使用 16 个位置一页。虚拟地址 35 所在的页映射到物理页框 6，得到哪个物理位置？",
+    "options": [
+      {
+        "id": "0",
+        "text": "96"
+      },
+      {
+        "id": "1",
+        "text": "35"
+      },
+      {
+        "id": "2",
+        "text": "99"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "35 的页内偏移是 3，页框 6 的起点是 96，合起来为 99。",
+    "feedback": {
+      "0": "只取了页框起点，未保留原页内偏移。",
+      "1": "虚拟地址所用页号需要经过映射。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-buffers-1",
+    "lessonId": "os-buffers",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "接收数据时，length 是已写入长度，capacity 是容量。下一次写 data[length] 之前需满足什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "length <= capacity"
+      },
+      {
+        "id": "1",
+        "text": "length < capacity"
+      },
+      {
+        "id": "2",
+        "text": "最后一个已写入字节不为零"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "只有当下一个下标在缓冲区范围内时才可写入。",
+    "feedback": {
+      "0": "等于容量时，下一个下标正好越界。",
+      "2": "原始缓冲区允许零值，存储边界取决于容量。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-buffers-2",
+    "lessonId": "os-buffers",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "原始字节缓冲区 {1, 0, 2} 的已知协议长度是 3 个元素，应该怎样处理？",
+    "options": [
+      {
+        "id": "0",
+        "text": "遇到 0 就把剩下元素丢掉"
+      },
+      {
+        "id": "1",
+        "text": "把起点直接当作 int * 解引用"
+      },
+      {
+        "id": "2",
+        "text": "按长度解释全部三个元素"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "原始数据可以包含零，字段边界来自协议或显式长度。",
+    "feedback": {
+      "0": "这是字符串的结束规则，不能推广到原始数据。",
+      "1": "对象类型、对齐与可用长度都没有这种保证。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-buffers-3",
+    "lessonId": "os-buffers",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "hi 和 lo 是已经验证都不超过 255 的 unsigned 值。补全按高八位在前的合并表达式。",
+    "options": [
+      {
+        "id": "0",
+        "text": "(hi << 8) | lo"
+      },
+      {
+        "id": "1",
+        "text": "(lo << 8) | hi"
+      },
+      {
+        "id": "2",
+        "text": "hi | lo"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "左移让 hi 进入高八位，按位或将 lo 放进低八位。",
+    "feedback": {
+      "1": "这把两个八位组交换了次序。",
+      "2": "高位没有移动，两个值会在低位彼此重叠。"
+    },
+    "code": "unsigned value = ___;",
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-memory-operations-1",
+    "lessonId": "os-memory-operations",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "把同一缓冲区的 3 个字节向后移 1 位，源目标范围重叠时选哪个函数？",
+    "options": [
+      {
+        "id": "0",
+        "text": "memcpy"
+      },
+      {
+        "id": "1",
+        "text": "memmove"
+      },
+      {
+        "id": "2",
+        "text": "memset"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "它对重叠范围规定了结果，等效于先保留要复制的字节。",
+    "feedback": {
+      "0": "若对象的复制范围重叠，memcpy 的行为未定义。",
+      "2": "memset 重复写一个字节值，不保留源数据。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-memory-operations-2",
+    "lessonId": "os-memory-operations",
+    "difficulty": "basic",
+    "type": "output",
+    "prompt": "下面代码最终显示什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "7 2"
+      },
+      {
+        "id": "1",
+        "text": "1 2"
+      },
+      {
+        "id": "2",
+        "text": "7 7"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "memset 对数组中两个 unsigned char 字节都写入值 7。",
+    "feedback": {
+      "0": "memset 写入了数组的完整大小，不只写第一项。",
+      "1": "数组已经被更新。"
+    },
+    "code": "unsigned char b[] = {1, 2};\nmemset(b, 7, sizeof b);\nprintf(\"%u %u\\n\", (unsigned)b[0], (unsigned)b[1]);",
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-memory-operations-3",
+    "lessonId": "os-memory-operations",
+    "difficulty": "intermediate",
+    "type": "boolean",
+    "prompt": "在可移植 C11 中，memset(int_array, 1, sizeof int_array) 总会把每个 int 元素设为数值 1。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "memset 写入的是重复的字节值 1；int 的完整对象表示不一定由一个字节组成。",
+    "feedback": {
+      "0": "给每个 int 赋数值 1 应使用按元素的赋值，例如循环赋值。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-linked-list-1",
+    "lessonId": "os-linked-list",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "遍历一个约定以 NULL 结尾的单向链表时，何时停止？",
+    "options": [
+      {
+        "id": "0",
+        "text": "当前节点指针变为 NULL 时"
+      },
+      {
+        "id": "1",
+        "text": "节点的 value 恰好为 0 时"
+      },
+      {
+        "id": "2",
+        "text": "遇到任意地址较小的节点时"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "空指针表示链已结束，不能尝试读取其成员。",
+    "feedback": {
+      "1": "0 可以是合法数据，终止由 next 关系表示。",
+      "2": "节点地址的数值顺序不决定链表顺序。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-linked-list-2",
+    "lessonId": "os-linked-list",
+    "difficulty": "basic",
+    "type": "completion",
+    "prompt": "item 是尚未加入链表的节点。补全第一步，使插入新表头时保留从 head 可达的旧链。",
+    "options": [
+      {
+        "id": "0",
+        "text": "item->next = NULL;"
+      },
+      {
+        "id": "1",
+        "text": "item->next = head;"
+      },
+      {
+        "id": "2",
+        "text": "head = item;"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "先保存旧头作为新头的后继，再改写 head。",
+    "feedback": {
+      "0": "若原链不空，这会让新头失去旧链。",
+      "2": "这条赋值将旧头地址提前覆盖，无法在下一行前建立旧链连接。"
+    },
+    "code": "___\nhead = item;",
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-linked-list-3",
+    "lessonId": "os-linked-list",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "若只有单向链表的头指针，没有额外索引，找到第 k 个节点通常需要什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "用 head + k 直接跳到节点"
+      },
+      {
+        "id": "1",
+        "text": "比较各节点的地址，最小值即第 k 项"
+      },
+      {
+        "id": "2",
+        "text": "从头沿 next 逐个前进到目标"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "链表通过链接连接节点，节点并没有数组那样的连续布局。",
+    "feedback": {
+      "0": "指针算术要求同一数组，独立节点不满足。",
+      "1": "地址大小并不编码链表顺序。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-allocator-1",
+    "lessonId": "os-allocator",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "容量为 8 的顺序分配模型已有 3 字节被占用，下个请求最大可取多少字节？",
+    "options": [
+      {
+        "id": "0",
+        "text": "5"
+      },
+      {
+        "id": "1",
+        "text": "8"
+      },
+      {
+        "id": "2",
+        "text": "3"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "从容量减去已占用量得到余量 5。",
+    "feedback": {
+      "1": "那是总容量，并不是尚可使用的大小。",
+      "2": "这是已占用量，已经发给先前请求。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-allocator-2",
+    "lessonId": "os-allocator",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "何时可以重置这种不支持单块释放的用户态字节池？",
+    "options": [
+      {
+        "id": "0",
+        "text": "每次请求完成后立刻重置"
+      },
+      {
+        "id": "1",
+        "text": "确认之前返回的所有片段都不再使用之后"
+      },
+      {
+        "id": "2",
+        "text": "只要容量还未用完就能重置"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "重置会让下一次请求重复使用旧范围；如果仍保留和使用旧片段，读写可能互相覆盖。",
+    "feedback": {
+      "0": "调用者可能仍持有并使用刚分到的数据。",
+      "2": "余量不说明旧片段是否仍被需要。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-allocator-3",
+    "lessonId": "os-allocator",
+    "difficulty": "advanced",
+    "type": "completion",
+    "prompt": "已验证 used <= capacity，三者均为 size_t。选择不会先计算可能溢出的加法的容量检查。",
+    "options": [
+      {
+        "id": "0",
+        "text": "used + count <= capacity"
+      },
+      {
+        "id": "1",
+        "text": "count <= capacity"
+      },
+      {
+        "id": "2",
+        "text": "count <= capacity - used"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "先算不会为负的剩余容量，再比较请求量，不必提前求 used + count。",
+    "feedback": {
+      "0": "加法先求值；大数情况下可能超出可表示范围。",
+      "1": "它忽略了已经占用的区域。"
+    },
+    "code": "if (___) {\n    /* 在这里推进游标 */\n}",
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-mmio-1",
+    "lessonId": "os-mmio",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "在内存映射 I/O 中，读取某地址可能意味着什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "一定只是读取普通内存中的缓存副本"
+      },
+      {
+        "id": "1",
+        "text": "通过已建立的映射读取某设备寄存器，并可能触发设备定义的副作用"
+      },
+      {
+        "id": "2",
+        "text": "在用户态总能直接读取"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "地址所对应的行为由平台和设备规定，不能视作普通 RAM 读写。",
+    "feedback": {
+      "0": "设备寄存器通常有单独的访问属性和语义。",
+      "2": "访问通常受权限与映射状态约束。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-mmio-2",
+    "lessonId": "os-mmio",
+    "difficulty": "basic",
+    "type": "boolean",
+    "prompt": "把整数常量强转为 volatile 指针，C11 就会自动建立到设备的有效映射。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "类型转换不创建操作系统映射，整数编码也不保证是合法地址。",
+    "feedback": {
+      "0": "volatile 只影响相关访问语义，不能改变平台的权限或映射。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-mmio-3",
+    "lessonId": "os-mmio",
+    "difficulty": "advanced",
+    "type": "single",
+    "prompt": "某设备手册规定状态寄存器的每个写入 1 会清除对应位，写 0 保持对应位。只清位 2 时，应给合规的平台写入接口什么值？",
+    "options": [
+      {
+        "id": "0",
+        "text": "只写位 2 为 1 的掩码，例如 0x04"
+      },
+      {
+        "id": "1",
+        "text": "读取当前值，按位或上 0x04 再写回"
+      },
+      {
+        "id": "2",
+        "text": "写入所有位为 0 的值"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "按设备给定语义，其他位写 0 就保持原状。",
+    "feedback": {
+      "1": "这会写回其他已为 1 的位，从而可能一并清除。",
+      "2": "设备规定写 0 保持该位，不能清除位 2。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-assembly-1",
+    "lessonId": "os-assembly",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "常见 GCC 工具链中，哪个选项可以从 C 文件生成汇编文本供阅读？",
+    "options": [
+      {
+        "id": "0",
+        "text": "-c"
+      },
+      {
+        "id": "1",
+        "text": "-E"
+      },
+      {
+        "id": "2",
+        "text": "-S"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "-S 在汇编文本生成后停止，通常产生 .s 文件。",
+    "feedback": {
+      "0": "-c 通常生成可供链接的目标文件。",
+      "1": "-E 只做预处理。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-assembly-2",
+    "lessonId": "os-assembly",
+    "difficulty": "basic",
+    "type": "boolean",
+    "prompt": "相同的 C 函数编译时必须生成相同数量的汇编指令。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "目标体系结构、优化等级和编译器实现都可能改变指令序列。",
+    "feedback": {
+      "0": "C11 定义的是程序行为，不规定具体机器指令数量。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-assembly-3",
+    "lessonId": "os-assembly",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "在某个平台上阅读函数调用的汇编，在哪里查找参数如何传给被调用函数？",
+    "options": [
+      {
+        "id": "0",
+        "text": "仅看标准 C 中 int 的最小值"
+      },
+      {
+        "id": "1",
+        "text": "该目标的 ABI 和调用约定文档"
+      },
+      {
+        "id": "2",
+        "text": "根据函数名的字母个数推断"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "ABI 规定寄存器、栈和返回值等接口，使分别编译的代码能相互调用。",
+    "feedback": {
+      "0": "最小范围不能确定参数传递所用寄存器和栈。",
+      "2": "名字长度不决定通常的参数位置。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-linker-script-1",
+    "lessonId": "os-linker-script",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "链接脚本一般帮助控制什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "如何把输入节组织到输出节以及布局位置"
+      },
+      {
+        "id": "1",
+        "text": "怎样对 C 文本做词法分析"
+      },
+      {
+        "id": "2",
+        "text": "如何控制标准输入缓冲行数"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "它告诉链接器怎样排列代码、数据和符号等构建产物。",
+    "feedback": {
+      "1": "词法分析在编译前端处理源文件时进行。",
+      "2": "这不属于链接器的文件布局职责。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-linker-script-2",
+    "lessonId": "os-linker-script",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "在常见 ELF 工具链中，.text 节通常保存什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "每个用户进程的标准输入"
+      },
+      {
+        "id": "1",
+        "text": "机器指令"
+      },
+      {
+        "id": "2",
+        "text": "源代码文本及所有注释"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "该名字通常用于可执行代码，是工具链约定。",
+    "feedback": {
+      "0": "标准输入是运行时的流，不是目标文件的代码节。",
+      "2": "编译输出的代码节一般由指令构成，不是原始源文件。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-linker-script-3",
+    "lessonId": "os-linker-script",
+    "difficulty": "intermediate",
+    "type": "single",
+    "prompt": "C11 是否规定所有目标文件必须把未初始化的静态 int 放在名为 .bss 的节？",
+    "options": [
+      {
+        "id": "0",
+        "text": "规定，而且 .bss 的偏移始终相同"
+      },
+      {
+        "id": "1",
+        "text": "没有 .bss 时静态 int 一定是随机值"
+      },
+      {
+        "id": "2",
+        "text": "不规定，.bss 是常见目标格式与工具链的约定"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "标准规定此类对象的初始值为零，文件怎么表达它由实现决定。",
+    "feedback": {
+      "0": "C11 不指定目标格式或节偏移。",
+      "1": "静态对象的初始化语义不能从节名推断。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-boot-1",
+    "lessonId": "os-boot",
+    "difficulty": "basic",
+    "type": "single",
+    "prompt": "引导程序在典型平台上将控制权交给内核之前通常负责什么？",
+    "options": [
+      {
+        "id": "0",
+        "text": "装载或定位映像，按引导协议准备参数与入口状态"
+      },
+      {
+        "id": "1",
+        "text": "先启动所有用户应用"
+      },
+      {
+        "id": "2",
+        "text": "保证所有机器都通过同一个标准 C main 进入内核"
+      }
+    ],
+    "answerId": "0",
+    "explanation": "引导程序和内核的接口有约定，内核接手时依赖规定的启动条件。",
+    "feedback": {
+      "1": "用户应用通常在内核和系统运行环境初始化之后启动。",
+      "2": "内核入口是平台特定的，引导协议不由 C11 规定。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-boot-2",
+    "lessonId": "os-boot",
+    "difficulty": "basic",
+    "type": "boolean",
+    "prompt": "在普通终端程序中依次打印 firmware、loader、kernel 就会启动真正的内核。",
+    "options": [
+      {
+        "id": "0",
+        "text": "正确"
+      },
+      {
+        "id": "1",
+        "text": "错误"
+      }
+    ],
+    "answerId": "1",
+    "explanation": "输出只模拟阶段变化，不会取得特权、装载映像或切换到内核入口。",
+    "feedback": {
+      "0": "打印字符串不会改变宿主系统当前的执行模式。"
+    },
+    "moduleId": 6
+  },
+  {
+    "id": "q-os-boot-3",
+    "lessonId": "os-boot",
+    "difficulty": "intermediate",
+    "type": "completion",
+    "prompt": "在下列用户态模型中，仅当检查成功才进入 KERNEL。补全检查。",
+    "options": [
+      {
+        "id": "0",
+        "text": "image_ok == 0"
+      },
+      {
+        "id": "1",
+        "text": "1"
+      },
+      {
+        "id": "2",
+        "text": "image_ok != 0"
+      }
+    ],
+    "answerId": "2",
+    "explanation": "非零表示模拟检查成功，此时才返回 KERNEL。",
+    "feedback": {
+      "0": "零代表检查失败，会把失败情况误判为成功。",
+      "1": "恒真条件会跳过检查的结果。"
+    },
+    "code": "if (___)\n    return KERNEL;\nreturn STOPPED;",
+    "moduleId": 6
   }
 ]

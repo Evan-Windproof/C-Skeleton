@@ -1,4 +1,4 @@
-import { grade, lessons, questions, questionsFor, type Question } from './data'
+import { grade, lessons, moduleForLesson, questionsById, questionsFor, type CourseModule, type Question } from './data'
 
 const key = 'c-skeleton:progress:v1'
 export type Mode = 'quick' | 'deep'
@@ -20,7 +20,7 @@ export function loadProgress(storage?: Pick<Storage, 'getItem'>): Progress {
     const attempts: Attempt[] = []
     if (Array.isArray(saved.attempts)) {
       for (const attempt of saved.attempts) {
-        const question = questions.find(item => item.id === attempt?.questionId)
+        const question = questionsById.get(attempt?.questionId)
         if (question?.options.some(option => option.id === attempt.optionId)) {
           attempts.push({ questionId: question.id, optionId: attempt.optionId, correct: grade(question, attempt.optionId).correct })
         }
@@ -41,7 +41,8 @@ export function loadProgress(storage?: Pick<Storage, 'getItem'>): Progress {
 
 export function saveProgress(progress: Progress, storage?: Pick<Storage, 'setItem'>) {
   try {
-    ;(storage ?? window.localStorage).setItem(key, JSON.stringify(progress))
+    const target = storage ?? window.localStorage
+    target.setItem(key, JSON.stringify(progress))
     return true
   } catch {
     return false
@@ -59,7 +60,19 @@ export function recordAttempt(progress: Progress, question: Question, optionId: 
   return result
 }
 
-export function accuracy(progress: Progress) {
-  const total = progress.attempts.length
-  return total ? Math.round(progress.attempts.filter(attempt => attempt.correct).length * 100 / total) : null
+export function progressStats(progress: Progress, module?: CourseModule) {
+  const completed = module
+    ? progress.completed.filter(lessonId => moduleForLesson(lessonId)?.id === module.id).length
+    : progress.completed.length
+  const attempts = module
+    ? progress.attempts.filter(attempt => questionsById.get(attempt.questionId)?.moduleId === module.id)
+    : progress.attempts
+  return {
+    total: module?.lessons.length ?? lessons.length,
+    completed,
+    answered: attempts.length,
+    accuracy: attempts.length
+      ? Math.round(attempts.filter(attempt => attempt.correct).length * 100 / attempts.length)
+      : null,
+  }
 }

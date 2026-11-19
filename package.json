@@ -1,6 +1,6 @@
 {
   "name": "c-skeleton",
-  "version": "0.1.0",
+  "version": "0.2.0-dev",
   "private": true,
   "license": "GPL-3.0-or-later",
   "type": "module",
@@ -11,6 +11,7 @@
     "build": "npm run typecheck && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:examples": "node tests/examples.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {

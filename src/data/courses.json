@@ -3,179 +3,1719 @@
     {
       "id": 1,
       "title": "C 语言基础",
-      "topics": [
-        "变量和基本类型",
-        "运算符",
-        "条件判断",
-        "循环",
-        "基础输入输出"
+      "description": "从 main 读起，学会识别变量、分支、循环与输入输出。",
+      "lessons": [
+        {
+          "id": "c-main",
+          "title": "C 程序结构与 main",
+          "summary": "阅读一个 C 文件时，可以先找 main。对运行在普通操作系统上的程序，启动环境会调用它，函数体中的语句通常从上往下执行。文件开头的 #include 提供库函数声明；大括号划出函数体，分号结束多数简单语句。把这些部分认清，就能判断哪一行负责准备、哪一行真正做事，以及程序在哪里结束。",
+          "detail": "在宿主环境中，int main(void) 是不接收命令行参数的标准形式之一。需要处理命令行参数时，可以用 int main(int argc, char *argv[])，argc 表示参数数目，argv[argc] 是空指针，只有在确认下标小于 argc 后才能取参数。从 main 返回 0 表示正常结束。",
+          "diagram": [
+            "包含 stdio.h，获得 puts 的声明",
+            "启动环境调用 main",
+            "puts 写出一行，随后 main 返回 0"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    puts(\"Hello, C\");\n    return 0;\n}",
+            "lines": [
+              "#include <stdio.h> 让编译器在调用前看到 puts 的声明。",
+              "puts 写出字符串并追加换行。",
+              "return 0 把成功状态交给宿主环境。"
+            ],
+            "output": "Hello, C"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(int argc, char *argv[])\n{\n    (void)argv;\n    if (argc > 1)\n        puts(\"has argument\");\n    else\n        puts(\"no extra argument\");\n    return 0;\n}",
+            "output": "no extra argument",
+            "lines": [
+              "这是 main 的带参数形式。以不带额外参数的方式运行示例。",
+              "(void)argv 明确表示这个示例暂时不用参数数组。",
+              "常见命令行环境把用于启动程序的名字计入 argc，所以用 argc > 1 判断是否有额外参数。"
+            ]
+          }
+        },
+        {
+          "id": "c-variables",
+          "title": "变量与基本数据类型",
+          "summary": "变量是程序给对象起的名字，声明先说明对象的类型，再给出名字。类型决定怎样解释对象中的数据、可表示哪些值，以及可以用哪些运算。int 适合一般整数，double 适合需要小数的近似计算，char 常用来保存字符。声明时给定初始值有助于读者和编译器追踪状态，也避免误读没有初始化的局部变量。",
+          "detail": "初始化发生在对象被引入时，之后可以用赋值替换对象的值。整数类型的范围由实现决定，<limits.h> 提供 INT_MIN、INT_MAX 等界限。普通 char 的有无符号取决于实现；若需要明确的字节数值，可用 unsigned char。用 printf 时应让格式说明符与实际参数类型匹配。",
+          "diagram": [
+            "声明 int count 并存入 4",
+            "count += 2 把结果写回原对象",
+            "按 int 和 char 所需的格式输出"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int count = 4;\n    char grade = 'B';\n    count += 2;\n    printf(\"%d %c\\n\", count, grade);\n    return 0;\n}",
+            "lines": [
+              "int count = 4 在声明处设定初始值。",
+              "count += 2 将 4 加 2 的结果写回 count。",
+              "%d 以十进制显示 int，%c 显示字符。"
+            ],
+            "output": "6 B"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    double unit = 1.25;\n    int quantity = 4;\n    double total = unit * quantity;\n    printf(\"%.2f\\n\", total);\n    return 0;\n}",
+            "lines": [
+              "unit 保存近似的浮点量，quantity 保存整数计数。",
+              "乘法前 quantity 转成 double，然后进行浮点乘法。",
+              "%.2f 显示小数点后两位，格式设置不会改变 total。"
+            ],
+            "output": "5.00"
+          }
+        },
+        {
+          "id": "c-constants",
+          "title": "常量与字面量",
+          "summary": "字面量把具体值直接写在源码里，例如 12、1.5、字母 A 的字符写法和引号内的文本。它的拼写也告诉编译器怎样理解它：单引号给出字符常量，双引号构成带结束符的字符串。给经常使用的固定值取一个含义明确的名字，有助于读懂条件和单位；使用 const 限制通过这个名字修改对象。",
+          "detail": "const int limit = 8 声明了一个受限定的对象，它具备存储期和地址。在 C11 中，块内 const 对象的值不是整数常量表达式，不能直接用在 case 标签里。enum { LIMIT = 8 } 的枚举常量可用于整数常量表达式。数字后缀也有意义，例如 10u 是 unsigned int 值。",
+          "diagram": [
+            "字面量 8 初始化 limit",
+            "limit 给固定阈值起名字",
+            "字符串右端包含终止空字符"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    const int limit = 8;\n    char grade = 'A';\n    printf(\"limit=%d\\n\", limit);\n    printf(\"grade=%c\\n\", grade);\n    return 0;\n}",
+            "lines": [
+              "limit 仍是一个对象，通过 limit 不能对它赋新值。",
+              "单引号中的 A 表示字符常量，可以用来初始化 char。",
+              "双引号内的内容可作为 printf 的格式字符串。"
+            ],
+            "output": "limit=8\ngrade=A"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    enum { ROWS = 3 };\n    int samples[ROWS] = {0, 2, 4};\n    printf(\"%d\\n\", samples[ROWS - 1]);\n    return 0;\n}",
+            "lines": [
+              "枚举常量 ROWS 可用于需要整数常量表达式的数组定义。",
+              "数组正好有 3 个元素，最后一个下标是 2。",
+              "这里把 ROWS 用在两个相关位置，调整容量时更容易发现关联。"
+            ],
+            "output": "4"
+          }
+        },
+        {
+          "id": "c-operators",
+          "title": "算术、比较和逻辑运算符",
+          "summary": "算术运算符计算数值，比较运算符判断大小或相等，逻辑运算符把条件组合起来。两个整数做除法时，小数部分会被舍去；% 给出余数。比较和逻辑表达式的结果是 int 类型的零或一。读条件时注意把 == 当作比较、把 = 当作赋值，并用括号把打算先完成的运算写清楚。",
+          "detail": "C11 的整数除法向零截断，并要求除数非零、商可表示。例如 7 / 2 得到 3，7 % 2 得到 1。&& 只在左边非零时求值右边，|| 只在左边为零时求值右边，所以可以先检查除数再进行除法。零在条件中为假，标量中的非零值在条件中为真。",
+          "diagram": [
+            "先执行整数除法与取余",
+            "比较得到 0 或 1",
+            "逻辑与按条件决定右侧是否执行"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int minutes = 125;\n    printf(\"%d h %d min\\n\", minutes / 60, minutes % 60);\n    printf(\"%d\\n\", minutes >= 60 && minutes < 180);\n    return 0;\n}",
+            "lines": [
+              "/ 得到完整小时数，% 得到剩余分钟数。",
+              "两个比较依次检查分钟数是否在指定区间。",
+              "&& 两侧都为真时返回 1。"
+            ],
+            "output": "2 h 5 min\n1"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int count = 0;\n    int sum = 12;\n    if (count != 0 && sum / count >= 3)\n        puts(\"enough\");\n    else\n        puts(\"no average\");\n    return 0;\n}",
+            "lines": [
+              "左侧先检查 count 是否非零。",
+              "这里左侧为假，所以右侧的除法不执行。",
+              "需要根据错误类型区分提示时，可加单独的分支。"
+            ],
+            "output": "no average"
+          }
+        },
+        {
+          "id": "c-branching",
+          "title": "if / else / switch",
+          "summary": "分支让程序根据条件选择接下来执行的语句。if 适合范围判断或多条件组合，else 处理此前条件未满足的情况。switch 对一个整型表达式的结果进行分派，适用于菜单编号或状态码等离散值。阅读 switch 时要留意 break：匹配某个 case 后会继续向下执行，直到遇到退出动作或到达末尾。",
+          "detail": "用大括号包住每个分支可以看清边界。没有花括号时，else 与最近的未配对 if 结合。switch 的 case 标签必须是可区分的整数常量表达式，default 处理没有匹配标签的情况。如果刻意顺序执行下一标签的语句，应让意图在代码中清楚可见。",
+          "diagram": [
+            "计算 score >= 60",
+            "根据真假选择恰好一侧",
+            "在 switch 中用 break 结束当前分派"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int score = 68;\n    if (score >= 60) {\n        puts(\"pass\");\n    } else {\n        puts(\"review\");\n    }\n    return 0;\n}",
+            "lines": [
+              "score >= 60 为真，进入 if 的语句块。",
+              "else 块只在条件为假时执行。",
+              "花括号明确显示两段代码的归属。"
+            ],
+            "output": "pass"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int command = 2;\n    switch (command) {\n    case 1:\n        puts(\"open\");\n        break;\n    case 2:\n        puts(\"save\");\n        break;\n    default:\n        puts(\"unknown\");\n        break;\n    }\n    return 0;\n}",
+            "lines": [
+              "command 为 2，控制流跳到 case 2。",
+              "break 结束 switch，防止继续执行 default。",
+              "无法匹配任何 case 时才从 default 开始。"
+            ],
+            "output": "save"
+          }
+        },
+        {
+          "id": "c-loops",
+          "title": "for / while / do while",
+          "summary": "循环重复执行一组语句。遍历固定数量的元素常用 for，把初始化、继续条件和步进放在一起。while 先判断再执行，适合事先不知道要重复多少次的工作。do while 先执行一次再检查条件，适合至少要处理一次的流程。读循环时先找停止条件，再检查循环体或步进是否会让状态向结束推进。",
+          "detail": "for 的 continue 会先执行步进表达式，再判断条件；while 的 continue 直接回到条件；do while 的 continue 跳到末尾的条件判断。break 退出最近的循环或 switch。数组遍历通常用 i < count，若 i 从 0 开始，i <= count 会多尝试一次。",
+          "diagram": [
+            "i 从 1 开始",
+            "i <= 3 时累加并执行 i++",
+            "条件首次为假后退出"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int sum = 0;\n    for (int i = 1; i <= 3; ++i)\n        sum += i;\n    printf(\"%d\\n\", sum);\n    return 0;\n}",
+            "lines": [
+              "初始化 i 后，每轮先判断 i <= 3。",
+              "执行 sum += i，再执行 ++i。",
+              "i 为 4 时条件为假，循环结束。"
+            ],
+            "output": "6"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int left = 0;\n    while (left > 0) {\n        puts(\"while\");\n        --left;\n    }\n    do {\n        puts(\"do while\");\n    } while (left > 0);\n    return 0;\n}",
+            "lines": [
+              "while 在进入循环体前判断，所以这里执行零次。",
+              "do while 在循环体之后判断，因此执行一次。",
+              "do while 结尾的分号是语法的一部分。"
+            ],
+            "output": "do while"
+          }
+        },
+        {
+          "id": "c-stdio",
+          "title": "printf 与基本输入输出",
+          "summary": "标准输入和标准输出是程序与终端或管道交换数据的常见接口。printf 按格式显示值，例如 %d 显示十进制 int；读取输入时要先看库函数是否成功，再用得到的数据。scanf 写入变量需要拿到变量的地址，格式也要匹配。读取整行时可以使用 fgets，并给出缓冲区容量，避免向数组末尾之外写入。",
+          "detail": "scanf 返回成功赋值的项目数，也可能返回 EOF。示例用 %2d 限制最多消耗两个字符，使可转换的十进制数落在 C11 保证的 int 范围。这个写法可能留下未读字符，不用于完整校验。真实命令行输入可以整行读取、检查是否截断，再用 strtol 检查转换末尾和范围。",
+          "diagram": [
+            "输入流给出文本 42",
+            "scanf 转换并成功写入 n",
+            "printf 从 n 读取整数并格式化"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int n;\n    if (scanf(\"%2d\", &n) == 1)\n        printf(\"n = %d\\n\", n);\n    else\n        puts(\"invalid input\");\n    return 0;\n}",
+            "lines": [
+              "%2d 读取受限宽度的十进制字段，地址 &n 指定写入位置。",
+              "返回值为 1 才表示一次赋值成功。",
+              "按 %d 显示读到的 int。"
+            ],
+            "output": "n = 42",
+            "input": "42\n"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char line[16];\n    if (fgets(line, sizeof line, stdin) == NULL)\n        return 1;\n    line[strcspn(line, \"\\n\")] = '\\0';\n    printf(\"Hello, %s\\n\", line);\n    return 0;\n}",
+            "lines": [
+              "fgets 最多存 15 个输入字符，再写终止空字符。",
+              "strcspn 找到换行的位置；没有换行时得到当前字符串长度。",
+              "把该位置设为空字符，再用 %s 显示这段文本。"
+            ],
+            "output": "Hello, C",
+            "input": "C\n"
+          }
+        },
+        {
+          "id": "c-basics-review",
+          "title": "基础语法综合练习",
+          "summary": "遇到小程序时可以依次找入口、标出变量的初值、列出影响计算的条件，再跟踪输出。循环处理一组值时，先确定每次处理的范围，之后分开记录用于遍历的变量与用于累计结果的变量。能用几行表格追踪这些变化，就能从辨认结构过渡到独立写出一个有输入、处理过程和输出的小程序。",
+          "detail": "示例用循环收集满足条件的数字，把筛选和累计放在同一个语句块。用 0 初始化总和和计数，让没有匹配项时也有定义良好的结果。如果要算平均值，先确认计数非零；如果需要小数，至少把除法的一侧转换成浮点类型。",
+          "diagram": [
+            "总和 sum 与计数 hits 从 0 开始",
+            "每轮先检查 i 是否为偶数",
+            "只把匹配值加进 sum 并增加 hits"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int sum = 0;\n    int hits = 0;\n    for (int i = 1; i <= 5; ++i) {\n        if (i % 2 == 0) {\n            sum += i;\n            ++hits;\n        }\n    }\n    printf(\"%d %d\\n\", sum, hits);\n    return 0;\n}",
+            "lines": [
+              "i 遍历 1 到 5。",
+              "if 筛出 2 和 4，分别加入 sum 并更新 hits。",
+              "打印总和在前，次数在后。"
+            ],
+            "output": "6 2"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int sum = 5;\n    int hits = 2;\n    if (hits != 0) {\n        double mean = (double)sum / hits;\n        printf(\"%.1f\\n\", mean);\n    }\n    return 0;\n}",
+            "lines": [
+              "先判断分母非零。",
+              "(double)sum 在除法之前把 sum 转成 double。",
+              "如果先写 sum / hits，再转换，整数除法已丢失小数部分。"
+            ],
+            "output": "2.5"
+          }
+        }
       ]
     },
     {
       "id": 2,
       "title": "函数与程序组织",
-      "topics": [
-        "函数声明与定义",
-        "参数传递",
-        "返回值",
-        "作用域",
-        "头文件",
-        "编译与链接"
+      "description": "用函数组织代码，区分值传递、作用域和多文件编译。",
+      "lessons": [
+        {
+          "id": "fn-declaration",
+          "title": "函数声明与定义",
+          "summary": "函数把一段有名字的操作提取出来，可以从多个地方调用。声明告诉编译器叫什么名字、接收什么类型的参数、返回什么类型；带函数体的定义则描述真正执行的步骤。调用前让编译器看到带参数类型的声明，有助于及早发现参数不匹配。小程序可把定义放在调用之前，也可先写原型、后写定义。",
+          "detail": "原型例如 int add(int left, int right);，参数名可以省略，参数类型不能省略。定义中的返回和参数类型必须与声明匹配。在 C11 中，int add(); 在独立声明里未指定参数类型与数目。明确没有参数时写 int add(void);，以便编译器在调用处检查。",
+          "diagram": [
+            "先读到 int twice(int n) 的声明",
+            "main 根据原型调用 twice(6)",
+            "定义中的函数体计算并返回结果"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint twice(int n);\n\nint main(void)\n{\n    printf(\"%d\\n\", twice(6));\n    return 0;\n}\n\nint twice(int n)\n{\n    return 2 * n;\n}",
+            "output": "12",
+            "lines": [
+              "分号结束函数原型，这一行没有函数体。",
+              "main 位于定义之前，仍能通过原型检查调用参数。",
+              "文件末尾的定义实现乘以两倍，本例输入保证乘积可表示。"
+            ]
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int five(void)\n{\n    return 5;\n}\n\nint main(void)\n{\n    printf(\"%d\\n\", five());\n    return 0;\n}",
+            "lines": [
+              "先写完整定义，后面的 main 可以直接看到它。",
+              "void 表示 five 不接收参数。",
+              "static 使这个辅助函数只在本源文件的翻译单元内链接。"
+            ],
+            "output": "5"
+          }
+        },
+        {
+          "id": "fn-parameters",
+          "title": "参数与值传递",
+          "summary": "调用函数时，实参表达式先产生值，再用这些值初始化函数自己的形参。形参看起来像调用处的变量，但它是在本次调用中使用的对象。给形参赋值只改变函数内部的对象。要把计算结果带回去，可以用 return 并由调用者保存结果。理解这一步，能区分函数做了计算和调用处的变量确实改变。",
+          "detail": "实参与形参可以同名也可以不同名，传递的是求值结果。带原型的函数调用会按形参类型转换相应的值。函数接收地址时，地址本身仍按值复制；第二个副本能访问同一个目标对象，这会在指针模块详细展开。带副作用的多个实参不要依赖彼此求值的先后顺序。",
+          "diagram": [
+            "用 level 的当前值初始化形参 n",
+            "函数内部改写 n 并返回",
+            "调用者可选择存入新变量或写回 level"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int bump(int n)\n{\n    n += 1;\n    return n;\n}\n\nint main(void)\n{\n    int level = 3;\n    int next = bump(level);\n    printf(\"%d %d\\n\", level, next);\n    return 0;\n}",
+            "lines": [
+              "调用只读取 level 当前的值。",
+              "bump 修改的是本次调用的 n。",
+              "next 取得返回值，level 仍是 3。"
+            ],
+            "output": "3 4"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int add(int value, int step)\n{\n    return value + step;\n}\n\nint main(void)\n{\n    int level = 5;\n    level = add(level, 2);\n    printf(\"%d\\n\", level);\n    return 0;\n}",
+            "lines": [
+              "add 接收两个形参，各自用一个实参值初始化。",
+              "add 计算后返回结果。",
+              "调用者显式赋值给 level，所以这次原变量会改变。"
+            ],
+            "output": "7"
+          }
+        },
+        {
+          "id": "fn-return",
+          "title": "返回值与 void",
+          "summary": "return 结束当前函数调用。函数声明承诺返回一个值时，用 return 表达式把计算结果交给调用者；调用者可保存它，或者把它用于另一个表达式。只负责显示、写入或其他动作的函数可以返回 void。遇到错误或无需继续时，void 函数可以用单独的 return; 提前结束。设计函数时先想清楚调用者如何知道结果。",
+          "detail": "有值返回时，表达式会按声明的返回类型转换。达到 void 函数的右花括号相当于返回。非 void 函数应让需要结果的路径都有 return；调用者使用没有返回的值会触发未定义行为。宿主环境中的 main 是特例之一，到达末尾等效于返回 0。",
+          "diagram": [
+            "clamp_low 接收输入",
+            "当值小于下限时提前返回 0",
+            "调用者保存结果再打印"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int clamp_low(int n)\n{\n    if (n < 0)\n        return 0;\n    return n;\n}\n\nint main(void)\n{\n    int result = clamp_low(-3);\n    printf(\"%d\\n\", result);\n    return 0;\n}",
+            "lines": [
+              "条件成立时，return 0 直接结束调用。",
+              "正常路径由 return n 返回原值。",
+              "main 接收 int 结果。"
+            ],
+            "output": "0"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic void show(int n)\n{\n    if (n == 0)\n        return;\n    printf(\"%d\\n\", n);\n}\n\nint main(void)\n{\n    show(0);\n    show(2);\n    return 0;\n}",
+            "lines": [
+              "show 返回 void，因此调用用于执行打印动作。",
+              "n 为 0 时，return; 跳过打印。",
+              "另一条路径打印后走到函数末尾。"
+            ],
+            "output": "2"
+          }
+        },
+        {
+          "id": "fn-local-global",
+          "title": "局部变量与全局变量",
+          "summary": "在函数或语句块内声明的名字通常称为局部变量，只能在相应作用域中使用；在函数之外声明的对象具有文件作用域，常被称为全局变量。局部变量适合保存一次操作的工作数据。文件作用域对象可以在多个函数间共享，但共享可变状态会让阅读与测试更难，通常可以用参数和返回值表达依赖。",
+          "detail": "文件作用域的普通对象具有静态存储期，未显式初始化时会按规则初始化为零。文件作用域的 static 还赋予名字内部链接，可让辅助状态只在本翻译单元内引用。块内声明同名对象会在该作用域遮住外层名字。如果状态只是一次计算所需，优先用局部变量。",
+          "diagram": [
+            "文件作用域 calls 在启动前得到初值",
+            "记一次调用时用局部量 step",
+            "两次调用访问同一个 calls"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int calls;\n\nstatic void count_call(void)\n{\n    int step = 1;\n    calls += step;\n}\n\nint main(void)\n{\n    count_call();\n    count_call();\n    printf(\"%d\\n\", calls);\n    return 0;\n}",
+            "lines": [
+              "calls 定义在文件作用域，所有调用共享它。",
+              "step 声明在 count_call 内，每次调用都会创建局部对象。",
+              "calls 初始为 0，经过两次累加后为 2。"
+            ],
+            "output": "2"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int value = 2;\n    {\n        int value = 7;\n        printf(\"inner %d\\n\", value);\n    }\n    printf(\"outer %d\\n\", value);\n    return 0;\n}",
+            "lines": [
+              "内层声明引入的是一个新对象。",
+              "在内层语句块中，value 这个名字绑定到内层对象。",
+              "离开语句块后，value 又指外层对象，其值仍为 2。"
+            ],
+            "output": "inner 7\nouter 2"
+          }
+        },
+        {
+          "id": "fn-lifetime",
+          "title": "作用域与存储期",
+          "summary": "作用域描述名字在源码的哪一段可见，存储期描述对象在程序运行时存在多久。同一个局部名字每次调用时通常对应新的自动对象，而带 static 的局部对象在各次调用之间保留值，名字仍只在块内可见。跟踪对象的存储期有助于理解状态为何保留，也能避免在对象已经结束生命后继续访问它。",
+          "detail": "块内普通对象通常在执行进入该块时获得存储，并在离开块时结束生命周期。块内 static 对象具有静态存储期，程序执行期间一直存在，而且初始化只在启动前进行。名字是否可以在另一段源码中使用，要单独按作用域判断。保存自动对象的地址也不能延长对象的生命周期。",
+          "diagram": [
+            "第一次调用，自动变量当次初始化",
+            "静态局部量在两次调用间保留",
+            "函数之外不能直接使用它们的名字"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int next_id(void)\n{\n    static int next;\n    return ++next;\n}\n\nint main(void)\n{\n    printf(\"%d\\n\", next_id());\n    printf(\"%d\\n\", next_id());\n    return 0;\n}",
+            "lines": [
+              "next 初始为 0，具有静态存储期。",
+              "++next 更新并返回累加后的值。",
+              "两个独立语句确定调用先后顺序。"
+            ],
+            "output": "1\n2"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic void show_pair(void)\n{\n    int fresh = 0;\n    static int saved;\n    printf(\"%d %d\\n\", ++fresh, ++saved);\n}\n\nint main(void)\n{\n    show_pair();\n    show_pair();\n    return 0;\n}",
+            "lines": [
+              "fresh 每次调用都重新初始化为 0。",
+              "saved 的名字也限定在函数块内，但两次调用共享同一对象。",
+              "两次自增作用于不同对象，不依赖参数求值顺序。"
+            ],
+            "output": "1 1\n1 2"
+          }
+        },
+        {
+          "id": "fn-headers",
+          "title": "头文件与 #include",
+          "summary": "头文件通常保存多个源文件都需要看到的声明，例如函数原型、共享类型和常量。预处理阶段会处理 #include，把合适的头文件内容纳入当前翻译单元。把接口放进头文件、把普通函数的定义放进源文件，可以让调用方共享同一份类型约定。头文件经常间接重复被包含，使用包含保护能防止同一份声明块被重复展开。",
+          "detail": "通常用尖括号包含标准库头文件，用双引号包含项目头文件；具体搜索路径由实现和构建参数决定。包含保护由 #ifndef、#define 和 #endif 配合：首次包含定义宏，之后跳过同一区域。保护宏应具有项目内唯一的名字，防止不同头文件意外使用同一个宏。",
+          "diagram": [
+            "预处理器读取 #include",
+            "头文件首次展开，保护宏被定义",
+            "再次包含时保护区域被跳过"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    size_t length = strlen(\"hello\");\n    printf(\"%zu\\n\", length);\n    return 0;\n}",
+            "lines": [
+              "string.h 提供 strlen 的原型。",
+              "strlen 计算终止空字符之前的字符数，类型为 size_t。",
+              "%zu 对应 size_t。"
+            ],
+            "output": "5"
+          },
+          "deepExample": {
+            "kind": "snippet",
+            "code": "/* counter.h */\n#ifndef C_SKELETON_COUNTER_H\n#define C_SKELETON_COUNTER_H\n\nint counter_next(void);\n\n#endif\n\n/* consumer.c，另存为单独文件 */\n#include \"counter.h\"",
+            "lines": [
+              "counter.h 声明接口，counter_next 的通常定义放在 counter.c。",
+              "重复包含时，ifndef 条件为假，保护区域跳过。",
+              "片段包含两个文件的内容，需分别保存；链接时还要提供实现。"
+            ]
+          }
+        },
+        {
+          "id": "fn-link",
+          "title": "多文件编译与链接",
+          "summary": "一个项目可以把接口、实现和调用点分别放在多个文件里。构建时，每个 .c 文件连同其包含的头文件形成各自的翻译单元，编译器将它们生成目标文件。链接器随后把需要的目标文件与库组合起来，找到函数调用对应的定义。看到“未定义引用”时，先确认实现所在的目标文件进入了链接。",
+          "detail": "编译器可凭函数原型编译调用，即使当前翻译单元里还没有定义。对常见的 GCC 工具链，gcc -c main.c 只生成 main.o，gcc main.o scale.o -o demo 才把两者组成可执行文件。实现文件也应包含它自己的接口头文件，让编译器能检查原型与定义一致。",
+          "diagram": [
+            "main.c 编译为 main.o，记录对 scale 的引用",
+            "scale.c 编译为 scale.o，提供定义",
+            "链接两个目标文件，生成可运行的 demo"
+          ],
+          "example": {
+            "kind": "snippet",
+            "code": "/* scale.h */\n#ifndef C_SKELETON_SCALE_H\n#define C_SKELETON_SCALE_H\nint scale(int value);\n#endif\n\n/* scale.c */\n#include \"scale.h\"\nint scale(int value) { return value * 3; }\n\n/* main.c */\n#include <stdio.h>\n#include \"scale.h\"\nint main(void)\n{\n    printf(\"%d\\n\", scale(4));\n    return 0;\n}",
+            "lines": [
+              "按注释分别保存 scale.h、scale.c、main.c；整段不能作为一个文件编译。",
+              "用 gcc -std=c11 -Wall -Wextra -Wpedantic -c main.c scale.c 生成两个 .o。",
+              "用 gcc main.o scale.o -o demo 链接，运行 ./demo 应输出 12。"
+            ]
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int scale(int value)\n{\n    return value * 3;\n}\n\nint main(void)\n{\n    printf(\"%d\\n\", scale(4));\n    return 0;\n}",
+            "lines": [
+              "这个单文件版本把定义放在调用前，便于与三个文件的写法对照。",
+              "static 标识只在当前翻译单元链接的帮助函数。",
+              "如果实现移到另一个 .c 文件以供这里调用，需让该实现具有外部链接并参与构建。"
+            ],
+            "output": "12"
+          }
+        },
+        {
+          "id": "fn-review",
+          "title": "函数综合练习",
+          "summary": "把一个较长的任务拆成职责明确的小函数，读者可以先看每个函数接收什么，再看调用顺序。综合练习用一个函数判断记录是否应该计入，用另一个处理计数，最后由 main 整合输入与输出。为返回值保留明确含义，避免靠隐藏状态让函数彼此配合，也便于单独测试边界和空结果。",
+          "detail": "简单判定函数可以返回逻辑表达式产生的 0 或 1，调用者可在 if 中使用它，也可将结果加到小范围计数里。名称应体现判定的对象和规则。参数按值传递让同一个函数能处理多个不同输入，调用者若要保存汇总结果，应在自己的对象中明确赋值。",
+          "diagram": [
+            "accepted 判定一个输入",
+            "main 把每项的 0 或 1 相加",
+            "将整数计数交给 printf"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int accepted(int reading)\n{\n    return reading >= 5;\n}\n\nint main(void)\n{\n    int count = accepted(3) + accepted(8) + accepted(5);\n    printf(\"%d\\n\", count);\n    return 0;\n}",
+            "lines": [
+              "accepted 对至少为 5 的值返回 1。",
+              "没有共享可变状态，三个调用的相对求值顺序不影响结果。",
+              "汇总发生在 main 中。"
+            ],
+            "output": "2"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int bounded(int value, int maximum)\n{\n    if (value > maximum)\n        return maximum;\n    return value;\n}\n\nint main(void)\n{\n    int total = 4;\n    total += bounded(9, 6);\n    printf(\"%d\\n\", total);\n    return 0;\n}",
+            "lines": [
+              "bounded 独立计算截断后的值。",
+              "调用者传入两个 int 实参，函数只处理它们的值。",
+              "+= 明确把返回值累加回 total。"
+            ],
+            "output": "10"
+          }
+        }
       ]
     },
     {
       "id": 3,
       "title": "指针与内存",
-      "topics": [
-        "内存地址",
-        "指针声明",
-        "取址与解引用",
-        "指针运算",
-        "数组与指针",
-        "二级指针",
-        "指针与函数参数"
+      "description": "用地址理解对象访问、数组边界与指针生命周期。",
+      "lessons": [
+        {
+          "id": "declaration",
+          "title": "地址与指针声明",
+          "summary": "变量在存活期间占有存储空间，地址用来定位它。指针也是变量，保存的是地址。声明 int *p 表示 p 可以指向一个 int 对象，写 int *p = &value 就能让它指向 value。只有指针指向类型匹配、仍在生命周期内的对象时，才能通过它访问该对象。不要读取未初始化的指针，也不要解引用空指针。",
+          "detail": "声明里的星号属于声明符。int *p, q; 只声明了一个指针，q 是普通整数。指针可以改为指向另一个对象，原先那个对象的值不会因此改变。NULL 表达当前没有对象可访问。",
+          "diagram": [
+            "指针变量 p",
+            "保存 &value",
+            "int 对象 value = 42"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int value = 42;\n    int *p = &value;\n    printf(\"%d\\n\", *p);\n    return 0;\n}",
+            "lines": [
+              "第 5 行创建整数对象 value。",
+              "第 6 行取得它的地址并初始化 p。",
+              "第 7 行通过 p 读取该整数。"
+            ],
+            "output": "42"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int left = 4;\n    int right = 9;\n    int *p = &left;\n    printf(\"%d\\n\", *p);\n    p = &right;\n    printf(\"%d %d\\n\", *p, left);\n    return 0;\n}",
+            "lines": [
+              "p 首先保存 left 的地址，解引用得到 4。",
+              "p = &right 更新 p 自己保存的地址。",
+              "再次解引用读到 right，left 没有被修改。"
+            ],
+            "output": "4\n9 4"
+          }
+        },
+        {
+          "id": "dereference",
+          "title": "取址与解引用",
+          "summary": "& 放在变量前面时取得它的地址，* 放在指针表达式前面时访问它指向的对象。读取 *p 相当于读取那个对象，把 *p 放在赋值号左侧则可以修改它。星号出现在声明和表达式中含义不同。使用前要确保目标对象仍然有效，且写入时目标对象允许修改。调试时可以先确认指针指到哪个变量，再追踪写入改变了哪个对象。",
+          "detail": "执行 *p = 12 时，程序先求出 p 保存的地址，再将 12 写到该地址对应的 int 对象。执行 p = &other 时，修改的是 p 自己保存的地址。这两种赋值写入不同的对象。",
+          "diagram": [
+            "p 保存 &value",
+            "*p = 12",
+            "value 从 7 变为 12"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int value = 7;\n    int *p = &value;\n    *p = 12;\n    printf(\"%d\\n\", value);\n    return 0;\n}",
+            "lines": [
+              "第 5–6 行建立 value 和指向它的 p。",
+              "第 7 行用 *p 修改 value。",
+              "第 8 行直接读取 value，结果与读取 *p 一样。"
+            ],
+            "output": "12"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int value = 7;\n    int *reader = &value;\n    int *writer = &value;\n    *writer += 5;\n    printf(\"%d\\n\", *reader);\n    return 0;\n}",
+            "lines": [
+              "reader 和 writer 是不同的指针变量。",
+              "两者当前指向同一个对象，通过 writer 修改目标。",
+              "reader 读取的仍然是同一个对象，所以看到新值。"
+            ],
+            "output": "12"
+          }
+        },
+        {
+          "id": "parameters",
+          "title": "指针与函数参数",
+          "summary": "C 的函数参数按值传递。传入一个指针时，函数拿到的是地址的副本。虽然修改形参指针本身不会改变调用者的指针，但用这个副本解引用仍可访问原来的对象，所以可以通过它修改调用者的变量。调用前要确认目标有效且可写，或者让函数明确处理空指针。",
+          "detail": "调用 increment(&value) 时，形参 p 保存 &value 的副本。函数写入 *p 时修改 value，返回后这个修改仍在。如果要改写调用者的指针变量，则需要传入那个指针变量的地址，例如使用 int ** 形参。",
+          "diagram": [
+            "main 中的 value",
+            "increment 里的 p 保存 &value",
+            "(*p)++ 修改 value"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic void increment(int *p)\n{\n    (*p)++;\n}\n\nint main(void)\n{\n    int value = 5;\n    increment(&value);\n    printf(\"%d\\n\", value);\n    return 0;\n}",
+            "lines": [
+              "第 3–6 行定义 increment，通过解引用执行自增。",
+              "第 11 行传入 value 的地址。",
+              "第 12 行读取已修改的 value。"
+            ],
+            "output": "6"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic void exchange(int *left, int *right)\n{\n    int old = *left;\n    *left = *right;\n    *right = old;\n}\n\nint main(void)\n{\n    int left = 2;\n    int right = 8;\n    exchange(&left, &right);\n    printf(\"%d %d\\n\", left, right);\n    return 0;\n}",
+            "lines": [
+              "两个形参各自接收一个对象地址的副本。",
+              "先保存左侧的旧值，避免第一次赋值后丢失。",
+              "调用方提供两个有效且可写的 int 对象。"
+            ],
+            "output": "8 2"
+          }
+        },
+        {
+          "id": "arithmetic",
+          "title": "指针算术",
+          "summary": "指向数组元素的指针加一会移动到下一个元素，移动距离按元素大小计算。指针运算的结果必须保持在同一数组内部或刚好位于末尾之后。尾后指针适合作为遍历的结束标记，不能解引用。两个指针相减也要求它们属于同一数组或其尾后位置，结果表示元素距离。",
+          "detail": "对 int a[3]，a + 3 是合法的尾后指针。从它减一得到 &a[2]，再解引用才会访问最后一个元素。指针差的类型是 ptrdiff_t，并要求差值能够用该类型表示。",
+          "diagram": [
+            "a + 0 → 10",
+            "a + 1 → 20",
+            "a + 2 → 30",
+            "a + 3 → 尾后位置"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int a[] = {10, 20, 30};\n    int *end = a + 3;\n    printf(\"%d\\n\", *(end - 1));\n    return 0;\n}",
+            "lines": [
+              "第 5 行创建三个元素的数组。",
+              "第 6 行得到尾后指针，不读取该位置。",
+              "第 7 行退回到最后一个元素并解引用。"
+            ],
+            "output": "30"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <stddef.h>\n\nint main(void)\n{\n    int data[] = {10, 20, 30, 40};\n    int *first = data + 1;\n    int *end = data + 4;\n    ptrdiff_t count = end - first;\n    printf(\"%td %d\\n\", count, *first);\n    return 0;\n}",
+            "lines": [
+              "first 从第二个元素开始。",
+              "end 的尾后位置用于计算距离，不作解引用。",
+              "两个位置属于同一数组，差值为 3 个元素，用 %td 打印 ptrdiff_t。"
+            ],
+            "output": "3 20"
+          }
+        },
+        {
+          "id": "arrays",
+          "title": "数组与指针的区别",
+          "summary": "数组是一整块连续存储，指针变量保存地址。在大多数表达式中，数组名会转换为指向首元素的指针，因此可以把数组传给接收指针的函数。这个转换不会携带数组长度。对真正的数组使用 sizeof 能得到整段存储的大小，对指针使用时只会得到指针本身的大小。",
+          "detail": "对 int a[3]，&a 的类型是 int (*)[3]，它指向整个数组。a 在通常表达式中转换成 int *，指向首元素。函数形参写成 int a[] 时会调整为 int *，应另传长度。",
+          "diagram": [
+            "数组 a → [3, 6, 9]",
+            "转换后为 &a[0]",
+            "sizeof a 保留整个数组大小"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int a[] = {3, 6, 9};\n    int *p = a;\n    printf(\"%zu %d\\n\", sizeof a / sizeof a[0], p[1]);\n    return 0;\n}",
+            "lines": [
+              "第 5 行声明数组并初始化三个元素。",
+              "第 6 行把转换得到的首元素地址存入 p。",
+              "第 7 行用数组大小算出元素数，再通过 p 读取第二项。"
+            ],
+            "output": "3 6"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int sum(const int values[], size_t count)\n{\n    int total = 0;\n    for (size_t i = 0; i < count; ++i)\n        total += values[i];\n    return total;\n}\n\nint main(void)\n{\n    int values[] = {2, 3, 5};\n    size_t count = sizeof values / sizeof values[0];\n    printf(\"%d\\n\", sum(values, count));\n    return 0;\n}",
+            "lines": [
+              "main 中的 values 是数组，可以从整个对象的大小算出长度。",
+              "调用时数组转换到指向首元素的指针，因此另外传 count。",
+              "sum 的循环用 count 限制下标，没有从指针猜测大小。"
+            ],
+            "output": "10"
+          }
+        },
+        {
+          "id": "ptr-double",
+          "title": "二级指针",
+          "summary": "二级指针保存一个指针对象的地址。int *p 可以指向 int，int **pp 可以指向一个 int * 对象。对 pp 解引用一次得到 p 这个指针，通过它还可以访问原来的整数。需要让函数改变调用者的指针指向时，可以传入指针变量自己的地址。每多走一级，都要先确认当前地址指向仍然存在的对象。",
+          "detail": "例如 pp = &p，随后 *pp = &right 会把 p 改为指向 right。**pp = 9 则通过新的 p 修改 right。在带输出参数的接口中，int **out 的两层都值得检查：要写入 *out，out 必须指向一个可写的指针对象；要访问 **out，还要求里面的指针指向有效的 int。",
+          "diagram": [
+            "pp 保存 &p",
+            "*pp 对应指针对象 p",
+            "**pp 对应 p 指向的整数"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int value = 4;\n    int *p = &value;\n    int **pp = &p;\n    **pp = 9;\n    printf(\"%d\\n\", value);\n    return 0;\n}",
+            "lines": [
+              "p 存整数对象的地址，pp 存指针对象的地址。",
+              "第一处 * 沿 pp 找到 p，第二处 * 沿 p 找到 value。",
+              "赋值改变 value，p 保存的地址没有变。"
+            ],
+            "output": "9"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic void point_to(int **slot, int *target)\n{\n    *slot = target;\n}\n\nint main(void)\n{\n    int left = 3;\n    int right = 8;\n    int *p = &left;\n    point_to(&p, &right);\n    printf(\"%d %d\\n\", *p, left);\n    return 0;\n}",
+            "lines": [
+              "&p 的类型是 int **，按值传给 slot。",
+              "*slot 对应调用者的 p，所以赋值让 p 改指 right。",
+              "这一操作没有写入两个整数对象。"
+            ],
+            "output": "8 3"
+          }
+        },
+        {
+          "id": "ptr-array-types",
+          "title": "指针数组与数组指针",
+          "summary": "指针数组是一组连续存放的指针，可以依次指向不同对象。数组指针则只保存一个地址，目标是整个数组。读声明时要注意括号：方括号通常先与名字结合；用括号把星号和名字绑在一起，才表示指向数组。保存多个目标地址时常用指针数组；逐行访问固定列宽的二维数组时常用数组指针。",
+          "detail": "int *p[4] 的 p 先与 [4] 结合，因此是四个 int * 元素的数组；int (*p)[4] 中 p 先与 * 结合，目标类型是四个 int 的数组。对第二种指针执行加一时，移动一个整个目标数组的步幅，且目标必须位于外层数组允许的范围内，尾后仍不可解引用。",
+          "diagram": [
+            "int *refs[2] 中，refs[0] 取出一个地址",
+            "int (*row)[2] 中，*row 访问整行",
+            "(*row)[1] 再从这行取一个整数"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int values[2] = {3, 7};\n    int *refs[2] = {&values[1], &values[0]};\n    int (*row)[2] = &values;\n    printf(\"%d %d\\n\", *refs[0], (*row)[0]);\n    return 0;\n}",
+            "lines": [
+              "refs 依次存储 values 第二项与第一项的地址。",
+              "row 的类型是指向含两个 int 的数组的指针。",
+              "*refs[0] 先选指针，(*row)[0] 则先选整行。"
+            ],
+            "output": "7 3"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int grid[2][3] = {{1, 2, 3}, {4, 5, 6}};\n    int (*row)[3] = grid;\n    ++row;\n    printf(\"%d\\n\", (*row)[2]);\n    return 0;\n}",
+            "lines": [
+              "grid 转换为指向第一行的指针，行类型为 int[3]。",
+              "++row 移动到外层数组的第二个元素，也就是第二行。",
+              "对第二行取下标 2，得到 6。"
+            ],
+            "output": "6"
+          }
+        },
+        {
+          "id": "ptr-lifetime",
+          "title": "指针生命周期与空指针",
+          "summary": "指针安全取决于它所指的对象是否仍存在，以及访问是否落在允许范围内。空指针是明确表示“没有目标”的值，可用来检查可选结果，但不可解引用。对象结束生命周期之后，原指针不能再用于访问那个对象。维护指针时要跟踪对象由谁提供、何时结束，以及哪些地方还保留它的地址。",
+          "detail": "一个指针变量可以比目标对象活得久。例如把块内自动变量的地址存到外层，离开块后该指针值变为不确定；不能靠 p != NULL 检测它是否安全。释放动态存储也会结束对应对象的生命周期。给某个仍在作用域的指针变量赋 NULL 可以清除那一个引用，其他副本仍需分别处理。",
+          "diagram": [
+            "p 初始化为 NULL，当前无目标",
+            "p 指到存活对象后才可以访问",
+            "在目标离开作用域前主动停止引用"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int value = 5;\n    int *p = NULL;\n    if (p == NULL)\n        puts(\"no target\");\n    p = &value;\n    if (p != NULL)\n        printf(\"%d\\n\", *p);\n    return 0;\n}",
+            "lines": [
+              "NULL 表达没有对象，第一段只比较指针。",
+              "&value 提供指向仍存活对象的有效地址。",
+              "此时除了非空，程序也知道目标的来源和生命周期。"
+            ],
+            "output": "no target\n5"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int *p = NULL;\n    {\n        int local = 17;\n        p = &local;\n        printf(\"%d\\n\", *p);\n        p = NULL;\n    }\n    if (p == NULL)\n        puts(\"cleared\");\n    return 0;\n}",
+            "lines": [
+              "local 在内部块中存活。",
+              "读值后在离开块之前把 p 改为已知的空指针。",
+              "块外只检查已知空值，没有继续使用 local 的原地址。"
+            ],
+            "output": "17\ncleared"
+          }
+        },
+        {
+          "id": "ptr-review",
+          "title": "指针综合练习",
+          "summary": "查找函数是串起地址、数组、边界和生命周期的好例子。调用者提供仍存活的数组及其长度，函数只在有效下标内访问元素，命中时返回对应元素的地址，没有命中时用空指针报告。调用者拿到结果后先检查，再决定是否读取。由此可以区分位置、位置上的值，以及接口承诺的访问范围。",
+          "detail": "返回的指针借用调用者提供的数组存储，函数没有分配新内存，调用者不用也不能对自动存储期数组的元素调用 free。返回类型 const int * 表示这个接口不通过结果写入元素；它也不延长对象的生命周期。遍历时可用下标与数量，也可用起点和同一数组的尾后位置作为上下界。",
+          "diagram": [
+            "调用方提供数组与数量",
+            "查找仅访问从 0 到 count - 1 的元素",
+            "命中返回元素地址，未命中返回 NULL"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic const int *find(const int *values, size_t count, int key)\n{\n    for (size_t i = 0; i < count; ++i)\n        if (values[i] == key)\n            return &values[i];\n    return NULL;\n}\n\nint main(void)\n{\n    int values[] = {4, 9, 12};\n    const int *hit = find(values, 3, 9);\n    if (hit != NULL)\n        printf(\"%d\\n\", *hit);\n    return 0;\n}",
+            "lines": [
+              "find 用 count 约束每次访问。",
+              "返回 &values[i]，此地址属于 main 中仍存活的数组。",
+              "调用者检查是否命中后才解引用。"
+            ],
+            "output": "9"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int values[] = {4, 9, 12};\n    const int *end = values + 3;\n    int total = 0;\n    for (const int *p = values; p != end; ++p)\n        total += *p;\n    printf(\"%d\\n\", total);\n    return 0;\n}",
+            "lines": [
+              "end 标记尾后，只用来结束循环。",
+              "p 在每次解引用前保证尚未到达 end。",
+              "加一使 p 前进一个 int 元素。"
+            ],
+            "output": "25"
+          }
+        }
       ]
     },
     {
       "id": 4,
       "title": "复杂类型与标准库",
-      "topics": [
-        "结构体",
-        "结构体指针",
-        "函数指针",
-        "const",
-        "void *",
-        "字符串",
-        "基本标准库操作"
+      "description": "用结构体、回调、字符串与标准库处理真实数据。",
+      "lessons": [
+        {
+          "id": "types-struct",
+          "title": "struct 结构体",
+          "summary": "结构体把一组相关数据放进一个有命名成员的对象。例如一条温度记录既有编号，也有测量值，使用结构体可以让它们一起传递、保存和复制。用点号访问具体成员，初始化时可以写明成员名，避免读者靠位置猜测用途。设计成员时先考虑这组数据代表的实体，再选择各成员的类型。",
+          "detail": "给同类型的结构体赋值会复制成员的值。如果其中有指针成员，复制的是地址，目标对象不会随之复制。C11 允许成员之间和末尾有填充，不能把结构体当成没有空隙的字节序列来推断外部文件格式。",
+          "diagram": [
+            "声明记录类型 struct reading",
+            "按成员名初始化一个对象",
+            "通过 . 访问所需成员"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstruct reading {\n    int id;\n    int temperature;\n};\n\nint main(void)\n{\n    struct reading record = {.id = 7, .temperature = 24};\n    printf(\"%d %d\\n\", record.id, record.temperature);\n    return 0;\n}",
+            "lines": [
+              "struct reading 为记录定义两个成员。",
+              "指定初始化器 .id 和 .temperature 明确对应关系。",
+              "record.id 从该对象中取出编号。"
+            ],
+            "output": "7 24"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstruct point { int x; int y; };\n\nint main(void)\n{\n    struct point first = {1, 2};\n    struct point second = first;\n    second.x = 9;\n    printf(\"%d %d\\n\", first.x, second.x);\n    return 0;\n}",
+            "lines": [
+              "second 用 first 的结构体值初始化，具有自己的存储。",
+              "second.x 的赋值只修改复制得到的对象。",
+              "如果成员是指针，两个结构体的指针仍可能指向同一目标。"
+            ],
+            "output": "1 9"
+          }
+        },
+        {
+          "id": "types-struct-pointer",
+          "title": "结构体指针与 ->",
+          "summary": "指向结构体的指针让函数能访问调用者持有的同一条记录。箭头运算符直接表示通过地址找成员，例如 p->count 等价于先解引用再访问 count。用它可以就地更新记录、沿链表访问下一个节点，或在不拷贝整条记录的情况下读取字段。和普通指针一样，访问前要确认目标存在且仍然有效。",
+          "detail": "箭头相当于 (*p).member，括号保证先按指针访问对象再取成员。直接写 *p.member 会先尝试在 p 上用点号。接口只需要读取成员时，可以接收 const struct record *，让类型检查阻止函数通过这个指针修改目标。",
+          "diagram": [
+            "&job 取得记录地址",
+            "形参持有同一记录的地址副本",
+            "p->done 写入原记录的成员"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstruct job { int done; };\n\nstatic void finish(struct job *j)\n{\n    j->done = 1;\n}\n\nint main(void)\n{\n    struct job job = {.done = 0};\n    finish(&job);\n    printf(\"%d\\n\", job.done);\n    return 0;\n}",
+            "lines": [
+              "&job 将实际记录的地址传给 finish。",
+              "j->done 等价于 (*j).done。",
+              "调用方读取同一对象，因此看到更新。"
+            ],
+            "output": "1"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstruct color { int red; };\n\nint main(void)\n{\n    struct color sample = {12};\n    const struct color *p = &sample;\n    printf(\"%d\\n\", p->red);\n    return 0;\n}",
+            "lines": [
+              "p 可以保存 sample 的地址。",
+              "const struct color * 允许读取但不允许通过 p 赋值给成员。",
+              "原 sample 仍是非 const 对象，可经正常途径更新。"
+            ],
+            "output": "12"
+          }
+        },
+        {
+          "id": "types-enum-typedef",
+          "title": "enum 与 typedef",
+          "summary": "枚举为离散状态提供一组可读的整数常量，例如“空闲”“运行”和“停止”。代码把名字用于判定，读者不用背哪个编号代表哪个状态。typedef 给已有类型起一个别名，常用于让共享类型和复杂声明更容易读。枚举适合有限种状态，别名适合重复使用的类型，两者可以配合使用。",
+          "detail": "未显式赋值的首个枚举常量取 0，之后默认取前一常量加一。C11 的枚举常量是 int；枚举类型兼容哪种整数类型由实现选择。不要依靠它的字节宽度保存协议值，也不要以为类型会检查所有传入值属于列出的状态。typedef 只引入新名字。",
+          "diagram": [
+            "为 S_IDLE 与 S_RUNNING 建立名称",
+            "通过 typedef 使用 Status 别名",
+            "在 switch 中根据状态名分派"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\ntypedef enum { S_IDLE, S_RUNNING } Status;\n\nint main(void)\n{\n    Status status = S_RUNNING;\n    switch (status) {\n    case S_IDLE: puts(\"idle\"); break;\n    case S_RUNNING: puts(\"running\"); break;\n    default: puts(\"unknown\"); break;\n    }\n    return 0;\n}",
+            "lines": [
+              "Status 是枚举类型的别名。",
+              "状态值用命名的枚举常量初始化。",
+              "switch 使用名字表达每种状态的动作。"
+            ],
+            "output": "running"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    enum { RETRY = 4, DONE };\n    size_t remaining = DONE - RETRY;\n    printf(\"%d %zu\\n\", DONE, remaining);\n    return 0;\n}",
+            "lines": [
+              "RETRY 明确指定为 4。",
+              "后续 DONE 未显式指定，所以为 5。",
+              "这里的枚举常量也可用作 case 标签或编译期的数组大小。"
+            ],
+            "output": "5 1"
+          }
+        },
+        {
+          "id": "types-function-pointer",
+          "title": "函数指针",
+          "summary": "函数指针保存可调用函数的地址，常用来在运行时选择操作，或把回调交给另一个函数。它的声明既包含返回类型，也包含参数列表。比如只有参数与返回类型兼容的函数，才适合存进指定类型的指针并通过它调用。读这类代码时先认出括号内的指针名字，再看右侧参数列表和左侧返回类型。",
+          "detail": "int (*op)(int) 表示 op 指向接收 int 并返回 int 的函数。函数名在多数表达式中转换为对应函数指针，因此可以写 op = twice，调用时可写 op(4)。函数指针与对象指针是不同的类别，不能依赖通过 void * 保存并恢复一个函数指针。通过不兼容类型调用函数会产生未定义行为。",
+          "diagram": [
+            "twice 转成与 op 匹配的函数指针",
+            "op(4) 通过地址调用目标函数",
+            "把返回值交给调用者"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int twice(int n) { return 2 * n; }\n\nint main(void)\n{\n    int (*op)(int) = twice;\n    printf(\"%d\\n\", op(4));\n    return 0;\n}",
+            "lines": [
+              "括号使 op 与 * 结合，声明的是指针。",
+              "twice 的类型匹配 op 的目标函数。",
+              "op(4) 与 (*op)(4) 都可调用该函数。"
+            ],
+            "output": "8"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\ntypedef int (*Operation)(int);\n\nstatic int add_one(int n) { return n + 1; }\nstatic int square(int n) { return n * n; }\n\nstatic int apply(Operation operation, int n)\n{\n    return operation(n);\n}\n\nint main(void)\n{\n    printf(\"%d %d\\n\", apply(add_one, 4), apply(square, 4));\n    return 0;\n}",
+            "lines": [
+              "Operation 给兼容的函数指针接口一个类型名。",
+              "apply 不依赖具体操作，把 n 传给收到的函数。",
+              "两个调用都没有共享可变状态。"
+            ],
+            "output": "5 16"
+          }
+        },
+        {
+          "id": "types-const",
+          "title": "const 的不同用法",
+          "summary": "const 说明哪些访问方式不能修改对象。const int *p 禁止通过 p 写整数，但 p 自己可以指向另一个对象。int *const p 固定这个指针对象的值，若目标可写仍能修改整数。把 const 放对位置可以清楚表达接口只读取输入，或让局部指针始终引用同一对象，编译器也能发现误写。读一条声明时分别判断指针能否换目标、目标能否被写入。",
+          "detail": "const int *const p 同时限制修改 p 和通过 p 修改整数。若目标是普通 int，代码仍可通过原变量或其他可写的别名修改它；只读指针并不冻结目标。若对象本来就定义为 const，强制去掉限定并尝试写入会产生未定义行为。",
+          "diagram": [
+            "只读视图限制对 *view 赋值",
+            "通过可写名字更新原对象",
+            "再次读取视图时得到新值"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int value = 5;\n    const int *view = &value;\n    value = 8;\n    printf(\"%d\\n\", *view);\n    return 0;\n}",
+            "lines": [
+              "view 不能用来修改 value。",
+              "value 的原始声明没有 const，可以通过原名修改。",
+              "两次访问引用同一对象，因此读取到 8。"
+            ],
+            "output": "8"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int left = 3;\n    int *const fixed = &left;\n    *fixed = 6;\n    printf(\"%d\\n\", left);\n    return 0;\n}",
+            "lines": [
+              "fixed 一经初始化就不能改指其他对象。",
+              "它指向的 int 未受 const 限定。",
+              "*fixed 的赋值把新值写到 left。"
+            ],
+            "output": "6"
+          }
+        },
+        {
+          "id": "types-void-pointer",
+          "title": "void * 通用对象指针",
+          "summary": "void * 可以在接口中暂存各种对象地址，适合传递只由接收方了解具体类型的上下文。它不描述目标对象的类型和大小，因此不能直接通过它读取一个值或按元素移动。需要访问时，应先恢复实际对象所需的指针类型。传递方与接收方还要约定对象在调用时有效，以及能否通过地址写入。",
+          "detail": "C11 允许对象指针与 void * 相互转换；转换成 void * 再转回原对象指针类型，结果应与原指针比较相等。只读源对象通常用 const void * 传递。正确的指针类型不能延长生命周期，也不能修复错误对齐。函数指针的可移植用法单独使用函数指针类型。",
+          "diagram": [
+            "&value 先是 int *",
+            "经 void * 保存其对象地址",
+            "恢复 int * 后读取正确类型的对象"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int value = 13;\n    void *opaque = &value;\n    int *p = opaque;\n    printf(\"%d\\n\", *p);\n    return 0;\n}",
+            "lines": [
+              "对象地址按规则转换为 void *。",
+              "赋值给 int * 时恢复原目标类型。",
+              "value 仍存活，按 int 读取它。"
+            ],
+            "output": "13"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstruct job { int id; };\n\nstatic void show(const void *context)\n{\n    const struct job *job = context;\n    printf(\"%d\\n\", job->id);\n}\n\nint main(void)\n{\n    struct job job = {7};\n    show(&job);\n    return 0;\n}",
+            "lines": [
+              "调用方向 show 传一个只读上下文地址。",
+              "show 按接口约定恢复到 const struct job *。",
+              "恢复类型后可访问成员，仍保留只读限定。"
+            ],
+            "output": "7"
+          }
+        },
+        {
+          "id": "types-strings",
+          "title": "字符串与字符数组",
+          "summary": "在 C 中，字符串是以空字符结尾的一段字符序列。字符数组可以存放这样的序列，也可以只是原始字符数据。数组的容量和字符串的长度往往不同：长度数到第一个空字符为止，数组还需要空间保存结束标记。读写文本时要保证终止符出现在有效范围内，否则字符串函数可能越界读取。",
+          "detail": "char text[] = \"cat\" 创建可修改的数组，包含 c、a、t 和终止空字符。const char *p = \"cat\" 指向字符串字面量，尝试修改该字面量是未定义行为。strlen 只需字符串指针，但要求有效的终止符；sizeof 对实际数组返回整个数组的存储大小。可以用 snprintf 向固定容量数组格式化文本，并检查返回值是否表示截断。",
+          "diagram": [
+            "用四个字符位置存放 cat 和终止空字符",
+            "strlen 遇到第一个空字符就停止",
+            "sizeof 读取整个数组占用的 C 字节数"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char text[] = \"cat\";\n    text[0] = 'b';\n    printf(\"%s %zu %zu\\n\", text, strlen(text), sizeof text);\n    return 0;\n}",
+            "lines": [
+              "数组初始化复制字面量字符和终止空字符。",
+              "可写数组允许把第一个字符改成 b。",
+              "strlen 不计空字符，sizeof 计整个数组。"
+            ],
+            "output": "bat 3 4"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    char word[8];\n    if (scanf(\"%7s\", word) != 1)\n        return 1;\n    char text[5];\n    int needed = snprintf(text, sizeof text, \"%s\", word);\n    if (needed < 0)\n        return 1;\n    printf(\"%s %s\\n\", text,\n           (size_t)needed >= sizeof text ? \"truncated\" : \"complete\");\n    return 0;\n}",
+            "lines": [
+              "%7s 读取一个不含空白的词，最多存 7 个字符，另外留一格写入终止空字符。",
+              "snprintf 用固定的 \"%s\" 格式复制文本，最多使用 sizeof text 个字节，包括结尾标记。",
+              "返回值是未截断时所需字符数（不含空字符），6 大于等于容量 5，表示发生截断。"
+            ],
+            "output": "abcd truncated",
+            "input": "abcdef\n"
+          }
+        },
+        {
+          "id": "types-allocation",
+          "title": "malloc / calloc / realloc / free",
+          "summary": "运行时才知道数据量时，可以向标准库申请动态存储。malloc 提供指定容量，calloc 按元素数量申请并把所有位清零，realloc 尝试调整已有分配，free 结束使用。每次申请都要检查失败，只有在容量范围内且值已正确初始化后才能读取。明确由哪段代码负责释放，也要避免在释放后继续使用任何旧地址。",
+          "detail": "计算 count * sizeof *ptr 前需要验证乘法不会超出 size_t。calloc 的全零位对整数表示零，不可泛化成任意类型的零值表示。realloc 使用非零新大小时，失败返回空指针且原分配仍有效；成功后用返回的指针，旧指针及其别名失效，即使地址外观看起来没变。扩大部分须先初始化。",
+          "diagram": [
+            "申请一段足够容纳两个 int 的存储",
+            "检查返回值，初始化后使用",
+            "释放存储，结束对象生命周期"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    int *values = malloc(2 * sizeof *values);\n    if (values == NULL)\n        return EXIT_FAILURE;\n    values[0] = 6;\n    values[1] = 9;\n    printf(\"%d\\n\", values[0] + values[1]);\n    free(values);\n    return 0;\n}",
+            "lines": [
+              "sizeof *values 给出 int 大小，这里不求值尚未赋值的指针。",
+              "malloc 返回的存储未初始化，先写入后读取。",
+              "计算完成后只释放对应分配一次。"
+            ],
+            "output": "15"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    int *values = calloc(2, sizeof *values);\n    if (values == NULL)\n        return EXIT_FAILURE;\n    int *larger = realloc(values, 3 * sizeof *values);\n    if (larger == NULL) {\n        free(values);\n        return EXIT_FAILURE;\n    }\n    values = larger;\n    values[2] = 7;\n    printf(\"%d %d\\n\", values[0], values[2]);\n    free(values);\n    return 0;\n}",
+            "lines": [
+              "calloc 把已有位置的位清零，values[0] 作为 int 读到零。",
+              "用临时指针接住 realloc 结果，失败时仍能释放原分配。",
+              "扩大的部分先给 values[2] 赋值，最后释放新分配。"
+            ],
+            "output": "0 7"
+          }
+        },
+        {
+          "id": "types-stdlib",
+          "title": "常用标准库函数",
+          "summary": "标准库提供了已经定义好接口的常用操作，例如把文本转成整数、排列数组、查找字符和处理错误。使用标准库时先读函数声明，再确认每个参数要求哪些类型、缓冲区大小和有效范围。返回值可能是结果，也可能报告是否成功；只有处理了失败条件，程序才能安全地使用转换或排序的结果。",
+          "detail": "strtol 可用结束指针说明读到哪里，溢出时设置 errno 为 ERANGE；调用前把 errno 设为 0，并检查是否读到数字以及尾部是否满足本程序规则。qsort 接收元素数、元素大小与比较函数；比较函数只需返回负、零或正来表示顺序，可使用大小比较，避免两个大整数相减溢出。",
+          "diagram": [
+            "把文本和结束指针交给 strtol",
+            "核对范围、是否转换和字符尾部",
+            "只在符合输入约定后使用结果"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <errno.h>\n\nint main(void)\n{\n    const char *text = \"123\";\n    char *end;\n    errno = 0;\n    long value = strtol(text, &end, 10);\n    if (errno == ERANGE || end == text || *end != '\\0')\n        return EXIT_FAILURE;\n    printf(\"%ld\\n\", value);\n    return 0;\n}",
+            "lines": [
+              "基数 10 要求按十进制转换，end 记录停止位置。",
+              "end == text 表示没有成功读取任何数字；*end 检查未消费的字符。",
+              "ERANGE 表示超出 long 范围。"
+            ],
+            "output": "123"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <stdlib.h>\n\nstatic int compare(const void *left, const void *right)\n{\n    int a = *(const int *)left;\n    int b = *(const int *)right;\n    return (a > b) - (a < b);\n}\n\nint main(void)\n{\n    int values[] = {4, 1, 3};\n    size_t count = sizeof values / sizeof values[0];\n    qsort(values, count, sizeof values[0], compare);\n    printf(\"%d %d %d\\n\", values[0], values[1], values[2]);\n    return 0;\n}",
+            "lines": [
+              "告诉 qsort 元素数与每个元素的字节大小。",
+              "比较器收到两个元素的地址，将它们转回 const int *。",
+              "用两个比较的结果构造 -1、0、1，没有对输入整数做减法。"
+            ],
+            "output": "1 3 4"
+          }
+        }
       ]
     },
     {
       "id": 5,
       "title": "底层 C 语言",
-      "topics": [
-        "位运算",
-        "sizeof",
-        "内存对齐",
-        "整数表示",
-        "未定义行为",
-        "内存安全"
+      "description": "认识位模式、对象布局、整数转换和内存安全。",
+      "lessons": [
+        {
+          "id": "low-number-bases",
+          "title": "二进制与十六进制",
+          "summary": "二进制用零和一表达每一位，适合描述开关与掩码。十六进制每位对应四个二进制位，可以更短地表示同一个数值，常用于查看协议字段或寄存器图。C11 的整数可以写成以 0x 开头的十六进制字面量。理解进制能帮助你看出代码在处理哪些位，也能避免把数字的写法误当成对象的类型。",
+          "detail": "十六进制的 A 到 F 表示十到十五，0x2A 等于 2×16+10。前缀 0 表示八进制，例如 010 等于十进制 8；0b 不是 C11 标准字面量前缀，部分编译器把它作为扩展。C 的一个字节至少八位，实际位数由 CHAR_BIT 给出；一位十六进制仍对应四个位。",
+          "diagram": [
+            "十六进制 2 表示高四位",
+            "A 表示低四位的 10",
+            "按不同格式显示同一个 unsigned 值"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    unsigned value = 0x2Au;\n    printf(\"%u %X\\n\", value, value);\n    return 0;\n}",
+            "lines": [
+              "0x 引入十六进制整数写法，u 指定无符号一类的整数类型。",
+              "%u 按十进制显示，%X 按大写十六进制显示。",
+              "两种显示都读取同一个 value。"
+            ],
+            "output": "42 2A"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    unsigned high = 3u;\n    unsigned low = 12u;\n    unsigned combined = (high << 4) | low;\n    printf(\"%02X\\n\", combined);\n    return 0;\n}",
+            "lines": [
+              "high 与 low 都能装进四位。",
+              "把高四位左移到目标位置，再用按位或合并低四位。",
+              "合并后的数值是 3×16+12，也就是 0x3C。"
+            ],
+            "output": "3C"
+          }
+        },
+        {
+          "id": "low-bitmasks",
+          "title": "位运算与位掩码",
+          "summary": "位掩码是选中若干二进制位的无符号值。按位与只保留双方都为一的位，适合检查状态；按位或可以置位，按位异或可以翻转选中的位。配合位移，可以把一项标志放到指定的位置。处理标志与协议字段时，习惯用无符号类型，并保证位移数量没有达到操作数类型的位宽。",
+          "detail": "按位与 & 逐位计算，逻辑与 && 判断两个表达式是否为真。清除标志可用 flags &= ~mask，让目标位对应为零而其余位保持。位移前会进行整数提升，位移数量不能为负，也不能大于等于提升后左操作数类型的宽度。左移有符号负数会产生未定义行为；有符号负数右移的结果由实现定义。",
+          "diagram": [
+            "1u 左移两位形成掩码",
+            "用按位或写入目标位",
+            "用按位与检查是否已置位"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    enum { READY_BIT = 2 };\n    unsigned ready_mask = 1u << READY_BIT;\n    unsigned flags = 0u;\n    flags |= ready_mask;\n    printf(\"%d\\n\", (flags & ready_mask) != 0u);\n    return 0;\n}",
+            "lines": [
+              "用无符号 1 建立只包含一个选中位的掩码。",
+              "或运算保留已有位并置位。",
+              "与运算后比较是否非零，检查选中位。"
+            ],
+            "output": "1"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    unsigned flags = 0x0Fu;\n    unsigned update = 1u << 2;\n    flags &= ~update;\n    printf(\"%X\\n\", flags);\n    return 0;\n}",
+            "lines": [
+              "掩码 update 只有位 2 为一，最低位编号为 0。",
+              "~update 让位 2 为零、其他位为一，按位与清除所选位。",
+              "0xF 清除值为 4 的位后得到 0xB。"
+            ],
+            "output": "B"
+          }
+        },
+        {
+          "id": "low-sizeof",
+          "title": "sizeof 与对象大小",
+          "summary": "sizeof 给出某个对象或类型占多少个 C 字节，常用于计算数组容量与传递内存操作的长度。数组对象的结果包含全部元素，指针的结果只描述指针对象。这个运算符不会从地址推断目标有多少数据。它的结果是无符号的 size_t，可以用 %zu 显示，并应与其他长度值保持类型一致。",
+          "detail": "标准保证 sizeof(char) 等于 1，但不保证一个字节恰好八位，可以用 CHAR_BIT 查询。sizeof(int) 和 sizeof(int *) 由实现决定。诸如 sizeof(n++) 的结果只取决于类型，不会执行对普通 int 的自增。可变长度数组类型的情况可能需要求值，不要把“不求值”当作无条件规则。",
+          "diagram": [
+            "sizeof values 得到整个数组占用的 C 字节数",
+            "sizeof values[0] 给出单项大小",
+            "相除得到元素个数"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int values[4] = {0};\n    size_t count = sizeof values / sizeof values[0];\n    printf(\"%zu %d\\n\", count, sizeof(char) == 1);\n    return 0;\n}",
+            "lines": [
+              "sizeof 的两个结果都是 size_t。",
+              "数组的整体大小除以单个元素大小得到 4。",
+              "sizeof(char) 恒为 1 个 C 字节。"
+            ],
+            "output": "4 1"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int n = 4;\n    size_t bytes = sizeof(n++);\n    printf(\"%d %d\\n\", n, bytes == sizeof(int));\n    return 0;\n}",
+            "lines": [
+              "n++ 的类型是 int。",
+              "这个 sizeof 的操作数不具有可变长度数组类型，因此不会执行自增。",
+              "验证 bytes 等于 sizeof(int)，无需假定 int 的宽度。"
+            ],
+            "output": "4 1"
+          }
+        },
+        {
+          "id": "low-alignment",
+          "title": "内存对齐与结构体填充",
+          "summary": "有些类型要求对象放在满足一定对齐条件的位置。结构体会依照成员的对齐要求布置字段，必要时在成员之间或末尾留出填充。读取跨组件的二进制数据时，不能仅靠成员大小相加推断布局，也不能把任意字节地址转成普通成员指针后直接访问。可以用标准接口测量布局，或明确编码格式。",
+          "detail": "_Alignof(T) 查询类型的对齐要求，offsetof(struct S, member) 给出非位域成员的字节偏移。C11 保证结构体成员按声明次序布局且开头没有填充，但不固定中间和末尾的填充。检查对齐本身不够：从字节缓冲区还原对象时还需考虑类型、有效表示和输入的编码来源。",
+          "diagram": [
+            "首成员按地址从对象开头放置",
+            "后续成员按类型要求选择位置",
+            "尾部可能填充以适合结构体数组"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <stddef.h>\n\nstruct item { char tag; int value; };\n\nint main(void)\n{\n    size_t offset = offsetof(struct item, value);\n    printf(\"%d %d\\n\", offset >= sizeof(char),\n           sizeof(struct item) >= offset + sizeof(int));\n    return 0;\n}",
+            "lines": [
+              "value 位于前一个 char 成员之后，具体偏移取决于实现。",
+              "结构体大小至少覆盖到 value 成员末尾，可能还有尾部填充。",
+              "这里只检查标准保证的关系。"
+            ],
+            "output": "1 1"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    int source = 27;\n    unsigned char bytes[sizeof source];\n    int copy;\n    memcpy(bytes, &source, sizeof bytes);\n    memcpy(&copy, bytes, sizeof copy);\n    printf(\"%d\\n\", copy);\n    return 0;\n}",
+            "lines": [
+              "bytes 保存本次运行中某个有效 int 的完整对象表示。",
+              "第二次 memcpy 将原样的字节复制到已正确对齐的 int 对象。",
+              "这一实验不把未按 int 对齐的地址转成 int *，也不假定文件或协议表示。"
+            ],
+            "output": "27"
+          }
+        },
+        {
+          "id": "low-widths",
+          "title": "整数宽度与 stdint.h",
+          "summary": "整数类型的名字通常给出用途或最小能力，不能用名字直接推出位数。C11 的 stdint.h 提供固定宽度和至少指定宽度的类型，常用于表示计数范围或处理外部数据。如果需要能容纳至少十六位的无符号值，可选 uint_least16_t。若协议要求恰好十六位，还要确认实现提供对应类型，并明确如何编码。",
+          "detail": "uint16_t 在实现支持无填充的恰好十六位类型时提供；uint_least16_t 是至少十六位的占用空间最小的一类无符号整数类型。用 <inttypes.h> 的格式宏可以让 printf 与所选类型匹配。处理外部字节序或对齐仍需单独写规则；指定整数类型不能自动决定内存中的字节顺序。",
+          "diagram": [
+            "先选所需的最小范围",
+            "用 stdint.h 声明整数",
+            "用 inttypes.h 的匹配宏显示该值"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <stdint.h>\n#include <inttypes.h>\n\nint main(void)\n{\n    uint_least16_t port = UINT16_C(8080);\n    printf(\"%\" PRIuLEAST16 \"\\n\", port);\n    return 0;\n}",
+            "lines": [
+              "uint_least16_t 保证至少十六位。",
+              "UINT16_C 生成适合该最小宽度一类的常量表达式。",
+              "PRIuLEAST16 让实现选择正确的十进制格式。"
+            ],
+            "output": "8080"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <stdint.h>\n#include <inttypes.h>\n\nint main(void)\n{\n    #ifdef UINT32_MAX\n        uint32_t id = 42;\n        printf(\"%\" PRIu32 \"\\n\", id);\n    #else\n        uint_least32_t id = 42;\n        printf(\"%\" PRIuLEAST32 \"\\n\", id);\n    #endif\n    return 0;\n}",
+            "lines": [
+              "若实现提供 uint32_t，就会提供对应最大值宏 UINT32_MAX。",
+              "不要求固定对象宽度时可以回退到至少三十二位的类型。",
+              "两条分支都用各自匹配的格式宏显示同一个数值。"
+            ],
+            "output": "42"
+          }
+        },
+        {
+          "id": "low-signedness",
+          "title": "有符号数与无符号数",
+          "summary": "有符号整数能表示负数，无符号整数用于非负范围和按位数据。结果类型为无符号整数时，运算会在类型范围内按模回绕，有符号运算超过可表示范围则属于未定义行为。两种类型一起参与计算时，编译器会先按转换规则寻找公共类型。写比较、长度计算或反向循环时，需要留意负数和回绕值是否被当成大正数使用。",
+          "detail": "比较同等级的 int 与 unsigned int 时，int 先转换为 unsigned int，例如 -1 转换为 UINT_MAX。其他整数类型的转换还要考虑等级与范围，不能概括成所有混合表达式都变成无符号。若业务含负值，先判断符号，再决定转换与比较，以明确处理边界。",
+          "diagram": [
+            "unsigned 到达 UINT_MAX",
+            "继续加 1 按模得到 0",
+            "负数参与混合比较时先做类型转换"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <limits.h>\n\nint main(void)\n{\n    unsigned n = UINT_MAX;\n    ++n;\n    printf(\"%u\\n\", n);\n    return 0;\n}",
+            "lines": [
+              "<limits.h> 提供本实现的 UINT_MAX。",
+              "unsigned 的加一在超出范围时按模回到 0。",
+              "无需假定 unsigned 有多少位。"
+            ],
+            "output": "0"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int n = -1;\n    unsigned limit = 10u;\n    if (n >= 0 && (unsigned)n < limit)\n        puts(\"in range\");\n    else\n        puts(\"outside\");\n    return 0;\n}",
+            "lines": [
+              "先检查 n 非负，避免负数进入长度比较。",
+              "只有非负时才执行到右侧的显式转换。",
+              "这里 n 为负，直接进入失败分支。"
+            ],
+            "output": "outside"
+          }
+        },
+        {
+          "id": "low-pointer-conversion",
+          "title": "指针转换与 uintptr_t",
+          "summary": "指针可以按 C 的规则转换，用于在接口间传递对象地址或查看对象的字节表示。uintptr_t 若由实现提供，可以存放从有效 void 指针转换得到的整数，再转回并比较相等。这个整数编码不能用来推断物理地址，也不会使任意数字变成可访问的对象。实际访问仍受类型、对齐、边界和生命周期限制。",
+          "detail": "指针到整数的映射通常由实现定义，使用无法表示该指针的整数类型会产生未定义行为。可选的 uintptr_t 特意覆盖有效 void * 的往返；不要据此做整数加法再假定能形成有效指针。C11 允许通过字符类型读取对象表示，例如用 const unsigned char * 逐字节观察，输出应避免假定具体字节序。",
+          "diagram": [
+            "有效对象地址转换成 void *",
+            "若可用，经 uintptr_t 保存往返值",
+            "恢复后只比较本次有效对象的地址"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <stdint.h>\n\nint main(void)\n{\n    int value = 7;\n    void *address = &value;\n    #ifdef UINTPTR_MAX\n        uintptr_t token = (uintptr_t)address;\n        void *same = (void *)token;\n    #else\n        void *same = address;\n    #endif\n    puts(same == address ? \"same\" : \"different\");\n    return 0;\n}",
+            "lines": [
+              "UINTPTR_MAX 只在 uintptr_t 可用时提供。",
+              "可用时演示从有效 void * 到 uintptr_t 再转回。",
+              "否则保留指针形式；两条分支都只验证与原地址相等。"
+            ],
+            "output": "same"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstruct record { unsigned char tag; int number; };\n\nint main(void)\n{\n    struct record item = {'C', 12};\n    const unsigned char *bytes = (const unsigned char *)&item;\n    printf(\"%d\\n\", bytes[0] == (unsigned char)'C');\n    return 0;\n}",
+            "lines": [
+              "结构体首成员 tag 是 unsigned char，结构体开头没有填充。",
+              "转换后 bytes 指向对象表示的最初字节。",
+              "这个比较无须假定另一个整数成员的大小或字节顺序。"
+            ],
+            "output": "1"
+          }
+        },
+        {
+          "id": "low-undefined",
+          "title": "未定义行为",
+          "summary": "未定义行为是程序违反语言前提后，C 标准不再给出任何结果要求的情形。常见来源包括有符号溢出、越界读写、解引用空指针和整数除零。不能从某次运行结果推断其他机器也会怎样。正确做法是在运算或访问发生之前满足前提，并用编译器警告、测试和运行时检查帮助发现错误。",
+          "detail": "还要区分由实现定义与未指定行为。普通 char 的有无符号是实现定义的选择，实现在文档中说明；无相互副作用的函数实参求值顺序通常未指定，代码不应依赖某一顺序。未定义行为没有允许结果列表，编译器也可以依据程序没有执行这种操作来优化。",
+          "diagram": [
+            "确认除数有效",
+            "只在条件成立时执行除法",
+            "失败路径给出诊断信息"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int divisor = 0;\n    if (divisor != 0)\n        printf(\"%d\\n\", 12 / divisor);\n    else\n        puts(\"invalid divisor\");\n    return 0;\n}",
+            "lines": [
+              "先判断条件，再决定是否求值除法。",
+              "本例被除数为 12，只需处理除数为零的情况。",
+              "代码展示的是防护后的有定义路径。"
+            ],
+            "output": "invalid divisor"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <limits.h>\n\nint main(void)\n{\n    int n = INT_MAX;\n    if (n < INT_MAX)\n        ++n;\n    puts(n == INT_MAX ? \"limit preserved\" : \"incremented\");\n    return 0;\n}",
+            "lines": [
+              "先用关系比较确认自增可表示。",
+              "已到上限时不执行自增。",
+              "程序只观察受保护的结果，不试图运行溢出。"
+            ],
+            "output": "limit preserved"
+          }
+        },
+        {
+          "id": "low-memory-safety",
+          "title": "内存安全与生命周期",
+          "summary": "内存安全需要同时关注位置和时间：访问要在对象范围内，对象也要在当时仍然存活。接收数组参数时通常同时传容量，写入前检查剩余空间，读取前确认元素已初始化。分配动态存储时，还要防止计算容量本身溢出，并在接口中明确由谁释放，以免丢失地址或释放后继续使用。",
+          "detail": "下标、长度和容量可用 size_t 表示。由 count 个元素求字节数前，先比较 count 是否大于 SIZE_MAX / element_size；这样不会先计算可能回绕的乘积。释放后，任何借用同一存储的引用都应停止使用。给唯一拥有者赋 NULL 有助于避免再次释放，但不会使旧别名安全。",
+          "diagram": [
+            "从实际数组算出 capacity",
+            "每次写入只在 used < capacity 时发生",
+            "写完再更新已使用的元素数"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int data[3] = {0};\n    size_t capacity = sizeof data / sizeof data[0];\n    size_t used = 0;\n    if (used < capacity) {\n        data[used] = 8;\n        ++used;\n    }\n    printf(\"%zu %d\\n\", used, data[0]);\n    return 0;\n}",
+            "lines": [
+              "capacity 来自整个数组，used 记录已使用项数。",
+              "检查严格上界后才使用 used 作为下标。",
+              "只有实际写入后才增加 used。"
+            ],
+            "output": "1 8"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <stdint.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    size_t count = 4;\n    int *data;\n    if (count == 0 || count > SIZE_MAX / sizeof *data)\n        return EXIT_FAILURE;\n    data = malloc(count * sizeof *data);\n    if (data == NULL)\n        return EXIT_FAILURE;\n    data[count - 1] = 5;\n    printf(\"%d\\n\", data[count - 1]);\n    free(data);\n    return 0;\n}",
+            "lines": [
+              "sizeof *data 不求值，给出每个 int 所占字节数。",
+              "先排除零与乘积溢出，再请求存储。",
+              "检查分配成功后只读写已赋值的最后一项，之后及时释放。"
+            ],
+            "output": "5"
+          }
+        },
+        {
+          "id": "low-volatile",
+          "title": "volatile 的含义与限制",
+          "summary": "volatile 用来描述可能被实现看不到的因素改变，或者访问本身具有外部意义的对象。在这些情况下，每次访问应按实现的规则被保留。系统代码会在特定设备访问约定或某些信号处理场景中使用它。它不提供原子性，也不能作为线程之间通知数据写完的保证；并发应使用合适的原子操作或锁。",
+          "detail": "C11 中 volatile 对象相关访问按抽象机规则进行，什么算一次访问由实现定义。实现和设备文档还需要规定 MMIO 的访问宽度与顺序。普通线程共享变量即使标记 volatile，冲突的非原子访问仍可导致数据竞争。volatile sig_atomic_t 的信号处理例子属于另一类受标准限定的场景。",
+          "diagram": [
+            "把读取表达式用于 volatile 对象",
+            "用普通变量保存本次读取结果",
+            "线程共享状态另用同步机制"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    volatile unsigned status = 1u;\n    unsigned snapshot = status;\n    printf(\"%u\\n\", snapshot);\n    return 0;\n}",
+            "lines": [
+              "status 是普通用户态对象，此处没有连接设备。",
+              "读取 volatile 对象，然后把本次观察值存入普通变量。",
+              "后续使用 snapshot 不会重复读 status。"
+            ],
+            "output": "1"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <signal.h>\n\nstatic volatile sig_atomic_t flagged;\n\nstatic void mark(int sig)\n{\n    (void)sig;\n    flagged = 1;\n}\n\nint main(void)\n{\n    if (signal(SIGINT, mark) == SIG_ERR)\n        return 1;\n    if (raise(SIGINT) != 0)\n        return 1;\n    printf(\"%d\\n\", flagged != 0);\n    return 0;\n}",
+            "lines": [
+              "处理函数只给 volatile sig_atomic_t 标志赋值。",
+              "raise 在处理函数返回后才返回；本例只触发一次。",
+              "这个特定信号场景不为一般线程数据访问提供同步。"
+            ],
+            "output": "1"
+          }
+        }
       ]
     },
     {
       "id": 6,
       "title": "操作系统开发预备",
-      "topics": [
-        "C 语言与内存模型",
-        "物理地址与虚拟地址",
-        "内存缓冲区",
-        "简单内存操作",
-        "底层数据结构",
-        "C 与汇编的关系"
+      "description": "用用户态模型理解缓冲区、分配器和内核启动。",
+      "lessons": [
+        {
+          "id": "os-user-kernel",
+          "title": "用户态 C 与内核态 C",
+          "summary": "用户态程序在操作系统提供的限制下执行，通常通过库接口请求文件、设备和内存等服务。内核负责执行需要权限的操作，并应先验证来自用户态的请求。两种代码可以同用 C 语法，但依赖的运行环境、可用库和调用约定不同。读系统代码时，先判断函数运行在哪一侧、资源由谁管理。",
+          "detail": "系统调用是用户态请求内核服务的一种平台接口。普通库函数有时调用它，有时只在用户态计算或缓冲数据。内核常使用独立运行环境，不可假定存在宿主 C 标准库、标准输入或 malloc。下面的权限判定只是用户态函数模型；它没有进入内核态，也没有更改进程权限。",
+          "diagram": [
+            "调用方提供模拟的句柄",
+            "服务函数检查请求是否有效",
+            "只在成功时写出结果"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int read_counter(int handle, unsigned *out)\n{\n    if (handle != 1 || out == NULL)\n        return -1;\n    *out = 12u;\n    return 0;\n}\n\nint main(void)\n{\n    unsigned value;\n    if (read_counter(0, &value) != 0)\n        puts(\"denied\");\n    if (read_counter(1, &value) == 0)\n        printf(\"%u\\n\", value);\n    return 0;\n}",
+            "lines": [
+              "普通函数模拟某个服务的参数校验，句柄 1 才被接受。",
+              "检查结果为失败时，调用方不读取未初始化的 value。",
+              "第二个请求成功填入 value，本实验始终在用户态。"
+            ],
+            "output": "denied\n12"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *file = tmpfile();\n    if (file == NULL)\n        return 1;\n    char line[8];\n    if (fputs(\"C\\n\", file) == EOF ||\n        fseek(file, 0, SEEK_SET) != 0 ||\n        fgets(line, sizeof line, file) == NULL) {\n        fclose(file);\n        return 1;\n    }\n    fputs(line, stdout);\n    fclose(file);\n    return 0;\n}",
+            "lines": [
+              "宿主 C 运行库提供 tmpfile 和流接口，本例只操作临时文件。",
+              "底层可能需要操作系统服务，但程序调用的是标准库。",
+              "库负责具体实现，课件不假定哪一步产生哪次系统调用。"
+            ],
+            "output": "C"
+          }
+        },
+        {
+          "id": "os-addresses",
+          "title": "物理地址与虚拟地址",
+          "summary": "在有虚拟内存的系统中，程序通常在一套自己的地址空间里运行。虚拟地址由硬件和操作系统的映射转换到物理位置，同一个虚拟数字在不同地址空间中可能对应不同内存，也可能没有有效映射。理解这一区别有助于阅读进程隔离、共享内存和缺页等概念。普通 C 指针不能直接当成物理地址。",
+          "detail": "分页是一种常见实现。虚拟地址可分成页号与页内偏移，页号经该地址空间的映射找到页框，偏移保持不变。权限与是否存在的检查由系统与硬件共同完成。此处用很小的整数和数组模拟映射，只说明查找关系；真实体系结构的页大小、表项格式和地址宽度另有规定。",
+          "diagram": [
+            "用除法得到虚拟页号",
+            "查询模拟页号对应的物理页框",
+            "用同一个页内偏移计算模拟位置"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    enum { PAGE = 16 };\n    unsigned frames[] = {7, 4, 9};\n    unsigned virtual_address = 0x25u;\n    unsigned page = virtual_address / PAGE;\n    unsigned offset = virtual_address % PAGE;\n    if (page < sizeof frames / sizeof frames[0])\n        printf(\"%u\\n\", frames[page] * PAGE + offset);\n    return 0;\n}",
+            "lines": [
+              "示例中每页含 16 个模拟位置，没有访问真实物理内存。",
+              "虚拟页号为 2、偏移为 5，数组为该页提供页框 9。",
+              "9 乘以 16 再加 5 得 149。"
+            ],
+            "output": "149"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    enum { PAGE = 16 };\n    unsigned space_a[] = {2};\n    unsigned space_b[] = {4};\n    unsigned offset = 1u;\n    printf(\"%u %u\\n\", space_a[0] * PAGE + offset,\n           space_b[0] * PAGE + offset);\n    return 0;\n}",
+            "lines": [
+              "两个模拟地址空间都有第 0 页内的地址 1。",
+              "各自的映射将第 0 页指向不同页框。",
+              "相同虚拟地址得出不同的物理位置。"
+            ],
+            "output": "33 65"
+          }
+        },
+        {
+          "id": "os-buffers",
+          "title": "内存缓冲区与字节操作",
+          "summary": "缓冲区在读写尚未完成时暂存一段数据，例如磁盘块或协议消息。代码通常同时记录容器的容量和已经填入的长度，以免把未使用部分当作数据读出。处理原始内容时可以用 unsigned char 数组按 C 字节访问。二进制缓冲区允许出现零值，要按约定的长度和格式读取，不能默认当成字符串。",
+          "detail": "协议常把数据定义成八位组，并指定多字节字段的排列次序。示例用范围在 0 到 255 的 unsigned char 元素分别模拟八位组，不假定一个 C 字节总是八位。解码时先提升到可容纳目标值的无符号类型，按显式移位合并，不把未对齐的地址强转为整数指针。",
+          "diagram": [
+            "容量表示缓冲区最多能放多少",
+            "used 表示目前已有几个有效位置",
+            "按协议顺序解释已填入的字节"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    unsigned char data[4];\n    size_t used = 0;\n    data[used++] = 0;\n    data[used++] = 0xA5u;\n    printf(\"%zu %u\\n\", used, (unsigned)data[1]);\n    return 0;\n}",
+            "lines": [
+              "容量是四个 C 字节，本例写入两项。",
+              "二进制数据的第一项可为 0，它不终止缓冲区。",
+              "只读取已写入范围内的位置。"
+            ],
+            "output": "2 165"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    unsigned char packet[] = {0x12u, 0x34u};\n    unsigned high = (unsigned)packet[0];\n    unsigned low = (unsigned)packet[1];\n    unsigned value = (high << 8) | low;\n    printf(\"%04X\\n\", value);\n    return 0;\n}",
+            "lines": [
+              "这里按协议把数组第 0 项当作高八位。",
+              "每个元素的样本值范围在 0 到 255。",
+              "显式地移位和合并，与宿主对象的实际字节序无关。"
+            ],
+            "output": "1234"
+          }
+        },
+        {
+          "id": "os-memory-operations",
+          "title": "memcpy / memset 的基本原理",
+          "summary": "memcpy 按指定长度把一块对象表示的字节复制到另一个地方，要求实际复制范围没有重叠。memset 则把同一个字节值写入指定范围，常用于初始化字符缓冲区。两者都需要调用者提供有效地址和足够空间，也不会通过指针自动得知容量。若源与目标会重叠，应选择 memmove。",
+          "detail": "memset 的第二参数先转换为 unsigned char，每个目标字节都被设为这个值。它不等同于给任意类型数组的每个元素赋指定数值。memmove 的效果相当于先保留源字节再写入目标，可用于同一缓冲区移动数据；无论哪种复制都要检查范围和源数据的有效性。",
+          "diagram": [
+            "清零目标缓冲区的每个字节",
+            "只复制指定的前两个源字节",
+            "剩余字节仍为之前写入的零"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    unsigned char source[] = {3, 7, 9};\n    unsigned char dest[sizeof source];\n    memset(dest, 0, sizeof dest);\n    memcpy(dest, source, 2);\n    printf(\"%u %u %u\\n\", (unsigned)dest[0],\n           (unsigned)dest[1], (unsigned)dest[2]);\n    return 0;\n}",
+            "lines": [
+              "memset 给 dest 的全部三个位置写零。",
+              "memcpy 复制源的前两个字节，两个数组不重叠。",
+              "第三个字节没有参与复制，所以仍为零。"
+            ],
+            "output": "3 7 0"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char text[6] = \"abcd\";\n    memmove(text + 1, text, 3);\n    printf(\"%s\\n\", text);\n    return 0;\n}",
+            "lines": [
+              "源范围是下标 0 到 2，目标范围是 1 到 3，两者重叠。",
+              "memmove 确保目标得到源范围原来的 a、b、c。",
+              "下标 4 的终止空字符保持原样。"
+            ],
+            "output": "aabc"
+          }
+        },
+        {
+          "id": "os-linked-list",
+          "title": "链表与底层数据结构",
+          "summary": "单向链表通过指针把若干节点连起来，每个节点保存数据和下一个节点的位置。用头指针找到第一项，沿着 next 逐个访问，直到空指针。节点不必连续存放，在已知位置时调整链接就能改变顺序。遍历和修改都要守住对象的生命周期，尤其要避免解引用末尾或留下指向已释放节点的链接。",
+          "detail": "数组可按下标直接定位，链表通常要从已知节点沿链接走到目标。在表头插入节点时，先让新节点连接旧头，再更新头指针。真实项目需要规定谁负责节点存储与释放；下面用在 main 中仍存活的变量模拟节点，不需要动态分配，也不把它们当持久对象。",
+          "diagram": [
+            "头指针指向第一节点",
+            "取节点数据并沿 next 前进",
+            "遇到 NULL 就结束遍历"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstruct node {\n    int value;\n    struct node *next;\n};\n\nint main(void)\n{\n    struct node second = {8, NULL};\n    struct node first = {3, &second};\n    for (const struct node *p = &first; p != NULL; p = p->next)\n        printf(\"%d\\n\", p->value);\n    return 0;\n}",
+            "lines": [
+              "first 的 next 指向仍然存活的 second。",
+              "每次先检查 p 非空，再读值和 next。",
+              "second 的 next 为空，因此不会尝试再访问一个节点。"
+            ],
+            "output": "3\n8"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstruct node { int value; struct node *next; };\n\nstatic void push(struct node **head, struct node *item)\n{\n    item->next = *head;\n    *head = item;\n}\n\nint main(void)\n{\n    struct node one = {1, NULL}, two = {2, NULL};\n    struct node *head = &one;\n    push(&head, &two);\n    printf(\"%d %d\\n\", head->value, head->next->value);\n    return 0;\n}",
+            "lines": [
+              "把 head 自身的地址传给 push，以便修改对应指针对象。",
+              "先令 two 指向旧头 one，再让 head 指向 two。",
+              "示例中的两个节点都在 main 中存活。"
+            ],
+            "output": "2 1"
+          }
+        },
+        {
+          "id": "os-allocator",
+          "title": "简易内存分配器原理",
+          "summary": "简易的顺序分配器可以从一块预留区域按需切出连续片段。它记住已占用的末尾，每次请求先核对剩余容量，再返回新片段的起点并推进游标。这种策略操作少，适合一批数据一起创建、一起丢弃的情况。下面的模型只切分普通用户态字符数组，不分配真实物理页，也不提供逐块释放。",
+          "detail": "游标必须不大于总容量。先用 capacity - used 算剩余，再与请求大小相比，可以避免 used + count 在检查之前回绕。当调用方不再使用任何片段时才可以重置游标。通用分配器还要处理对齐、释放、碎片和并发；本模型只返回可存放字节的片段。",
+          "diagram": [
+            "从 8 字节缓冲区开头切出 3 字节",
+            "used 变为 3，下次从此位置开始",
+            "如果请求超过剩余容量就拒绝"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    unsigned char area[8];\n    size_t used = 0, requested = 3;\n    if (requested <= sizeof area - used) {\n        unsigned char *slice = area + used;\n        used += requested;\n        slice[0] = 12;\n        printf(\"%zu %u\\n\", used, (unsigned)slice[0]);\n    }\n    return 0;\n}",
+            "lines": [
+              "初始游标 0，由示例保证没有超过总容量。",
+              "切出 3 字节后推进游标，不覆写已分配范围。",
+              "这里写入申请来的第一个字节。"
+            ],
+            "output": "3 12"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstruct pool { unsigned char area[8]; size_t used; };\n\nstatic unsigned char *take(struct pool *pool, size_t count)\n{\n    if (count == 0 || count > sizeof pool->area - pool->used)\n        return NULL;\n    unsigned char *part = pool->area + pool->used;\n    pool->used += count;\n    return part;\n}\n\nint main(void)\n{\n    struct pool pool = {{0}, 0};\n    unsigned char *first = take(&pool, 3);\n    unsigned char *second = take(&pool, 6);\n    printf(\"%d %d %zu\\n\", first != NULL, second == NULL, pool.used);\n    return 0;\n}",
+            "lines": [
+              "第一次申请 3 字节，余量为 5。",
+              "第二次请求 6 字节失败，游标不变。",
+              "片段借用 pool 的数组，不能传给 free。"
+            ],
+            "output": "1 1 3"
+          }
+        },
+        {
+          "id": "os-mmio",
+          "title": "寄存器与 MMIO 基础",
+          "summary": "寄存器可指处理器内部的工作状态，也可指设备暴露的控制和状态字段。内存映射 I/O 把特定地址范围交给设备，访问这些地址时可能发出命令或读取状态。真实访问依赖映射权限、访问宽度和设备手册。课程用普通变量模拟字段与状态位，运行示例不会读取或写入任何硬件寄存器。",
+          "detail": "寄存器访问可能有副作用，例如读取清除状态，或写 1 才清除对应位。使用平台提供的访问接口，并遵守设备指定的操作和顺序。某些实现用 volatile 表达不能省略的访问，但它不会为任意地址建立映射，也不保证原子性或设备所需的屏障。",
+          "diagram": [
+            "以用户态变量模拟设备状态字段",
+            "取一次状态快照并检查所需位",
+            "根据手册语义选择下一步操作"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    volatile unsigned simulated_status = 0x04u;\n    unsigned snapshot = simulated_status;\n    unsigned ready = (snapshot & 0x04u) != 0u;\n    puts(ready ? \"ready\" : \"busy\");\n    return 0;\n}",
+            "lines": [
+              "simulated_status 是普通 C 对象，未映射设备。",
+              "把读取结果存到普通变量后，只对快照做位操作。",
+              "位 2 为 1 时，模型显示 ready。"
+            ],
+            "output": "ready"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstruct model { unsigned command; unsigned status; };\n\nint main(void)\n{\n    struct model device = {0u, 0u};\n    device.command = 1u;\n    if (device.command == 1u) {\n        device.status = 1u;\n        device.command = 0u;\n    }\n    printf(\"%u %u\\n\", device.status, device.command);\n    return 0;\n}",
+            "lines": [
+              "两个成员模拟命令寄存器和状态寄存器。",
+              "这里由普通软件分支模拟设备接受命令并改变状态。",
+              "真实设备的响应由设备与平台定义，不是 C 赋值语句本身。"
+            ],
+            "output": "1 0"
+          }
+        },
+        {
+          "id": "os-assembly",
+          "title": "C 与汇编语言的关系",
+          "summary": "C 源码描述对象、计算和控制流，编译器按照目标体系结构和调用约定把它转换成可执行指令，汇编可以用较易读的文字表示这些指令。阅读汇编有助理解参数、返回值以及栈的具体实现。不过同一段 C 代码在不同机器或优化设置下可能生成不同指令，语言标准也不指定寄存器或栈布局。",
+          "detail": "常见 GCC 工具链可用 gcc -std=c11 -O0 -S demo.c -o demo.s 生成用于观察的汇编文本，不需要写或运行汇编。在优化构建中，编译器可能内联函数、提前求出常量或用无分支指令表达条件。判断翻译是否合理，应比较语言要求的可观察结果，并结合特定平台 ABI 理解细节。",
+          "diagram": [
+            "源程序描述一次整数求和",
+            "编译器依据目标与选项选取指令",
+            "由调用约定承接参数和返回值"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int sum(int a, int b)\n{\n    return a + b;\n}\n\nint main(void)\n{\n    printf(\"%d\\n\", sum(2, 7));\n    return 0;\n}",
+            "lines": [
+              "函数提供有名字的操作，main 接收它返回的 int。",
+              "可保存为 demo.c 并用 gcc -std=c11 -O0 -S demo.c 查看输出文本。",
+              "不同目标的参数位置和具体指令由 ABI 与编译器决定。"
+            ],
+            "output": "9"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nstatic int bigger(int left, int right)\n{\n    return left > right ? left : right;\n}\n\nint main(void)\n{\n    printf(\"%d\\n\", bigger(3, 5));\n    return 0;\n}",
+            "lines": [
+              "条件表达式按大小选择一个值。",
+              "分别使用 -O0 与 -O2 生成汇编观察：同一选择可以用不同指令实现。",
+              "只验证函数对这些可表示的输入返回较大值，不假定会看到某条跳转。"
+            ],
+            "output": "5"
+          }
+        },
+        {
+          "id": "os-linker-script",
+          "title": "目标文件与链接脚本",
+          "summary": "目标文件包含机器代码和数据，还保存符号以及有哪些引用需要在链接时调整。链接器把来自多个文件的节组织成最终文件。链接脚本可以指定哪些输入节归到同一个输出节、放在哪里，以及给哪些位置命名。系统软件会用这些机制控制布局；普通用户程序通常使用工具链提供的默认设置。",
+          "detail": "以常见 ELF 工具链为例，.text 常放代码，.data 常放需要初始值的可写数据，.bss 常描述启动时清零的数据。具体节名、加载地址和符号如何解释取决于工具链与目标。可以用 gcc -c 生成目标文件并用 readelf -S 观察节，输出不属于 C11 的规定。",
+          "diagram": [
+            "各翻译单元生成代码、数据与符号",
+            "链接器组合输入节并解析引用",
+            "脚本按平台需要约束输出布局"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nconst int signature = 7;\nint counter = 3;\nstatic int scratch;\n\nint main(void)\n{\n    printf(\"%d %d %d\\n\", signature, counter, scratch);\n    return 0;\n}",
+            "lines": [
+              "三个对象分别展示只读初值、可写初值与隐式零初值。",
+              "用 gcc -std=c11 -c demo.c -o demo.o 再以 readelf -S demo.o 观察目标文件。",
+              "常见 ELF 会区分这些数据节；输出的数值由 C 初始化语义决定。"
+            ],
+            "output": "7 3 0"
+          },
+          "deepExample": {
+            "kind": "snippet",
+            "code": "/* 依赖特定工具链：链接脚本提供符号 demo_image_start。 */\nextern const unsigned char demo_image_start[];\n\nconst void *image_start_address(void)\n{\n    return demo_image_start;\n}",
+            "lines": [
+              "extern 声明允许当前文件引用另处提供的名字。",
+              "在 GNU 风格链接脚本中可把当前位置赋给一个符号，例如 demo_image_start = .;。",
+              "这种符号用途依赖工具链约定；片段不能独立生成可执行程序，也未访问该地址。"
+            ]
+          }
+        },
+        {
+          "id": "os-boot",
+          "title": "Bootloader 与内核启动流程",
+          "summary": "机器上电后，固件先进行平台初始化。随后可能由引导程序找到内核映像、准备启动参数，并按平台约定把控制权交给内核入口。内核接手后建立自己的运行环境，再启动更多系统组件。不同平台可以合并或省略某些步骤。这里用普通 C 程序模拟阶段变化，不编写或运行真正的引导代码。",
+          "detail": "引导接口可以规定映像格式、内存布局、入口状态与参数。实际平台对“固件”“引导程序”的分工不同，有的固件可以直接加载兼容的内核映像。练习只检查从某阶段到下一阶段的条件，无需读写磁盘区块、设置页表或做特权操作。",
+          "diagram": [
+            "固件阶段模拟初始化完成",
+            "引导阶段模拟检查映像",
+            "满足条件才转入模型的内核阶段"
+          ],
+          "example": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nint main(void)\n{\n    int firmware_ready = 1;\n    int image_loaded = 1;\n    puts(\"firmware\");\n    if (firmware_ready) {\n        puts(\"loader\");\n        if (image_loaded)\n            puts(\"kernel\");\n    }\n    return 0;\n}",
+            "lines": [
+              "两个标志只代表模型中的初始化与装载结果。",
+              "只有固件初始化完成才转入引导阶段；只有装载成功才转入内核阶段。",
+              "输出展示阶段顺序，程序没有真正装载或启动任何内核。"
+            ],
+            "output": "firmware\nloader\nkernel"
+          },
+          "deepExample": {
+            "kind": "program",
+            "code": "#include <stdio.h>\n\nenum stage { STOPPED, KERNEL };\n\nstatic enum stage after_loader(int image_ok)\n{\n    return image_ok ? KERNEL : STOPPED;\n}\n\nint main(void)\n{\n    enum stage next = after_loader(0);\n    puts(next == KERNEL ? \"kernel\" : \"stopped\");\n    return 0;\n}",
+            "lines": [
+              "after_loader 的入参模拟映像检查的布尔结果。",
+              "失败时进入 STOPPED，而非继续到模型的 KERNEL。",
+              "真实的进入条件由平台协议与引导策略决定。"
+            ],
+            "output": "stopped"
+          }
+        }
       ]
-    }
-  ],
-  "lessonModuleId": 3,
-  "lessons": [
-    {
-      "id": "declaration",
-      "title": "地址与指针声明",
-      "summary": "变量在存活期间占有存储空间，地址用来定位它。指针也是变量，保存的是地址。声明 int *p 表示 p 可以指向一个 int 对象，写 int *p = &value 就能让它指向 value。只有指针指向类型匹配、仍在生命周期内的对象时，才能通过它访问该对象。不要读取未初始化的指针，也不要解引用空指针。",
-      "detail": "声明里的星号属于声明符。int *p, q; 只声明了一个指针，q 是普通整数。指针可以改为指向另一个对象，原先那个对象的值不会因此改变。NULL 表达当前没有对象可访问。",
-      "diagram": [
-        "指针变量 p",
-        "保存 &value",
-        "int 对象 value = 42"
-      ],
-      "example": {
-        "code": "#include <stdio.h>\n\nint main(void)\n{\n    int value = 42;\n    int *p = &value;\n    printf(\"%d\\n\", *p);\n    return 0;\n}",
-        "lines": [
-          "第 5 行创建整数对象 value。",
-          "第 6 行取得它的地址并初始化 p。",
-          "第 7 行通过 p 读取该整数。"
-        ],
-        "output": "42"
-      }
-    },
-    {
-      "id": "dereference",
-      "title": "取址与解引用",
-      "summary": "& 放在变量前面时取得它的地址，* 放在指针表达式前面时访问它指向的对象。读取 *p 相当于读取那个对象，把 *p 放在赋值号左侧则可以修改它。星号出现在声明和表达式中含义不同。使用前要确保目标对象仍然有效，且写入时目标对象允许修改。",
-      "detail": "执行 *p = 12 时，程序先求出 p 保存的地址，再将 12 写到该地址对应的 int 对象。执行 p = &other 时，修改的是 p 自己保存的地址。这两种赋值写入不同的对象。",
-      "diagram": [
-        "p 保存 &value",
-        "*p = 12",
-        "value 从 7 变为 12"
-      ],
-      "example": {
-        "code": "#include <stdio.h>\n\nint main(void)\n{\n    int value = 7;\n    int *p = &value;\n    *p = 12;\n    printf(\"%d\\n\", value);\n    return 0;\n}",
-        "lines": [
-          "第 5–6 行建立 value 和指向它的 p。",
-          "第 7 行用 *p 修改 value。",
-          "第 8 行直接读取 value，结果与读取 *p 一样。"
-        ],
-        "output": "12"
-      }
-    },
-    {
-      "id": "parameters",
-      "title": "指针与函数参数",
-      "summary": "C 的函数参数按值传递。传入一个指针时，函数拿到的是地址的副本。虽然修改形参指针本身不会改变调用者的指针，但用这个副本解引用仍可访问原来的对象，所以可以通过它修改调用者的变量。调用前要确认目标有效且可写，或者让函数明确处理空指针。",
-      "detail": "调用 increment(&value) 时，形参 p 保存 &value 的副本。函数写入 *p 时修改 value，返回后这个修改仍在。如果要改写调用者的指针变量，则需要传入那个指针变量的地址，例如使用 int ** 形参。",
-      "diagram": [
-        "main 中的 value",
-        "increment 里的 p 保存 &value",
-        "(*p)++ 修改 value"
-      ],
-      "example": {
-        "code": "#include <stdio.h>\n\nstatic void increment(int *p)\n{\n    (*p)++;\n}\n\nint main(void)\n{\n    int value = 5;\n    increment(&value);\n    printf(\"%d\\n\", value);\n    return 0;\n}",
-        "lines": [
-          "第 3–6 行定义 increment，通过解引用执行自增。",
-          "第 11 行传入 value 的地址。",
-          "第 12 行读取已修改的 value。"
-        ],
-        "output": "6"
-      }
-    },
-    {
-      "id": "arithmetic",
-      "title": "指针算术",
-      "summary": "指向数组元素的指针加一会移动到下一个元素，移动距离按元素大小计算。指针运算的结果必须保持在同一数组内部或刚好位于末尾之后。尾后指针适合作为遍历的结束标记，不能解引用。两个指针相减也要求它们属于同一数组或其尾后位置，结果表示元素距离。",
-      "detail": "对 int a[3]，a + 3 是合法的尾后指针。从它减一得到 &a[2]，再解引用才会访问最后一个元素。指针差的类型是 ptrdiff_t，并要求差值能够用该类型表示。",
-      "diagram": [
-        "a + 0 → 10",
-        "a + 1 → 20",
-        "a + 2 → 30",
-        "a + 3 → 尾后位置"
-      ],
-      "example": {
-        "code": "#include <stdio.h>\n\nint main(void)\n{\n    int a[] = {10, 20, 30};\n    int *end = a + 3;\n    printf(\"%d\\n\", *(end - 1));\n    return 0;\n}",
-        "lines": [
-          "第 5 行创建三个元素的数组。",
-          "第 6 行得到尾后指针，不读取该位置。",
-          "第 7 行退回到最后一个元素并解引用。"
-        ],
-        "output": "30"
-      }
-    },
-    {
-      "id": "arrays",
-      "title": "数组与指针的区别",
-      "summary": "数组是一整块连续存储，指针变量保存地址。在大多数表达式中，数组名会转换为指向首元素的指针，因此可以把数组传给接收指针的函数。这个转换不会携带数组长度。对真正的数组使用 sizeof 能得到整段存储的大小，对指针使用时只会得到指针本身的大小。",
-      "detail": "对 int a[3]，&a 的类型是 int (*)[3]，它指向整个数组。a 在通常表达式中转换成 int *，指向首元素。函数形参写成 int a[] 时会调整为 int *，应另传长度。",
-      "diagram": [
-        "数组 a → [3, 6, 9]",
-        "转换后为 &a[0]",
-        "sizeof a 保留整个数组大小"
-      ],
-      "example": {
-        "code": "#include <stdio.h>\n\nint main(void)\n{\n    int a[] = {3, 6, 9};\n    int *p = a;\n    printf(\"%zu %d\\n\", sizeof a / sizeof a[0], p[1]);\n    return 0;\n}",
-        "lines": [
-          "第 5 行声明数组并初始化三个元素。",
-          "第 6 行把转换得到的首元素地址存入 p。",
-          "第 7 行用数组大小算出元素数，再通过 p 读取第二项。"
-        ],
-        "output": "3 6"
-      }
     }
   ]
 }
