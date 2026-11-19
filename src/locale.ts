@@ -1,6 +1,7 @@
 const zhCN = {
   title: 'C Skeleton',
   home: '课程首页',
+  desktop: '返回桌面',
   github: 'GitHub',
   catalog: '课程目录',
   progress: '学习进度',
